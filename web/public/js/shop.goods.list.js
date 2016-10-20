@@ -631,19 +631,7 @@ function account(){
 			return false;
 		}
 	}
-
-	// var _tmpCarStr = SessionUtils.getParam('shopGoodsCar');
-	// var _params = 'action=ShopPro&run=setShopCarData&car='+_tmpCarStr;
-    //
-	// ComClass.post(_params,function(data){
-	// 	console.log(data);
-	// 	var _d = eval('('+data+')');
-	// 	if(_d.code == 707) {
-	// 		alert(_d.msg);
-	// 		//location.reload()
-	// 		return false;
-	// 	}
-	// });
+	
 	
 	_marketPro(_totalPrice);
 	

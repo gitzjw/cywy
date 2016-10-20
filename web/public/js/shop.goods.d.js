@@ -105,28 +105,50 @@ function downCar(obj){
 }
 
 function addCar(obj){
-	obj.prev().show();
-	obj.prev().prev().show();
-	var _proNum = obj.prev().html();
-	if(parseInt(_proNum)>99){
-		alert('最多支持99个');return false;
-	}
-	_proNum = parseInt(_proNum)+1
-	_totalNum = _totalNum+1;
-	obj.prev().html(_proNum);
+	//by zjw
 	var _id = obj.parent().attr('_list');
-	var _price = parseFloat(parseFloat(obj.parent().attr('_price')).toFixed(2));
-	var _title = obj.parent().attr('_title');
-	var _proPrice = parseFloat((_price*_proNum).toFixed(2));
-	var _wtype_tmp = obj.parent().attr('_wtype');
-	//侧边统计	
-	leftTotalArray[_wtype_tmp] = typeof(leftTotalArray[_wtype_tmp])=='undefined'?0:parseInt(leftTotalArray[_wtype_tmp]);
-	leftTotalArray[_wtype_tmp] = parseInt(leftTotalArray[_wtype_tmp])+1;
-	curdLeftTotalNum();
-	
-	_totalPrice = parseFloat((_totalPrice+_price).toFixed(2));
-	carArray[_id] = new Array(_id,_price,_title,_proNum,_proPrice,_wtype_tmp);
-	opCar(_id,carArray[_id]);
+	var _shopGoodsCar = SessionUtils.getParam('shopGoodsCar');
+
+	//console.log(_id);
+	//console.log(_shopGoodsCar);
+	var _params = 'action=ShopPro&run=addCarTypeIf&id='+_id+'&goods='+_shopGoodsCar;
+	ComClass.post(_params,function(data){
+		var _d = eval('('+data+')');
+		//console.log(_d);
+		if(_d.code == 'false') {
+			alert(_d.msg);
+			return false;
+		}else {
+			//订单状态作为调用支付展示 标示
+			SessionUtils.setParam('shopOrderTypeHT',_d.msg);
+			obj.prev().show();
+			obj.prev().prev().show();
+			var _proNum = obj.prev().html();
+
+
+			if (parseInt(_proNum) > 99) {
+				alert('最多支持99个');
+				return false;
+			}
+			_proNum = parseInt(_proNum) + 1
+			_totalNum = _totalNum + 1;
+			obj.prev().html(_proNum);
+			var _id = obj.parent().attr('_list');
+			var _price = parseFloat(parseFloat(obj.parent().attr('_price')).toFixed(2));
+			var _title = obj.parent().attr('_title');
+			var _proPrice = parseFloat((_price * _proNum).toFixed(2));
+			var _wtype_tmp = obj.parent().attr('_wtype');
+			//侧边统计
+			leftTotalArray[_wtype_tmp] = typeof(leftTotalArray[_wtype_tmp]) == 'undefined' ? 0 : parseInt(leftTotalArray[_wtype_tmp]);
+			leftTotalArray[_wtype_tmp] = parseInt(leftTotalArray[_wtype_tmp]) + 1;
+			curdLeftTotalNum();
+
+			_totalPrice = parseFloat((_totalPrice + _price).toFixed(2));
+			carArray[_id] = new Array(_id, _price, _title, _proNum, _proPrice, _wtype_tmp);
+			opCar(_id, carArray[_id]);
+		}
+	});
+
 }
 
 function downCarAlert(obj){
