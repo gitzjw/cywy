@@ -1,0 +1,198 @@
+<script type="text/javascript" src="src.js"></script>
+
+	<table id="tg" class="easyui-treegrid" title="" style=""
+				data-options="
+					iconCls: 'icon-ok',
+					rownumbers: true,
+					animate: true,
+					collapsible: true,
+					fitColumns: true,
+					url: 'data/run.php?c=ShopTypeEui&f=getShopTypeList',
+					method: 'get',
+					idField: 'id',
+					treeField: 'sName',
+					showFooter: true,
+					onDblClickCell:onDblClickCell,
+					toolbar:'#tb'
+				">
+			<thead>
+				<tr>
+					<th data-options="field:'id',width:80">编号</th>
+					<th data-options="field:'sName',width:180">名称</th>
+					<th data-options="field:'imgPath',width:180">图片</th>
+					<th data-options="field:'isTop',width:80">置顶（1 置顶 0未置顶）</th>
+					<th data-options="field:'cSort',width:80">排序</th>
+					<th data-options="field:'isIndex',width:80">首页显示（1 显示）</th>
+					<th data-options="field:'aLif',width:80">首字母</th>
+					<th data-options="field:'cStatus',width:60,formatter:function(val,row){if(val=='1'){return '<strong style=\'color:green\'>正常</strong>';}else{return '禁用';}}">状态</th>
+				</tr>
+			</thead>
+		</table>
+		<div  id="tb" style="padding:2px 5px;">
+				<a href="#" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-add'" onclick="javascript:openWin()">添加分类</a>
+				<a href="#" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-reload'" onclick="javascript:reloadData()">刷新</a>
+		</div>
+		<div id="w" class="easyui-window" title="编辑分类数据" data-options="modal:true,closed:true,iconCls:'icon-save'" style="padding:10px;">
+			<div class="easyui-panel" title="" style="width:500px">
+				<div style="padding:10px 60px 20px 60px">
+				    <form id="ff" method="post" enctype="multipart/form-data">
+				    	<input type="hidden" name="id" id="inputId" value="">
+						<input type="hidden" name="imgPath" id="imgPath" value="">
+				    	<table cellpadding="5">
+				    		<tr>
+				    			<td>编号:</td>
+				    			<td id="cateIdTd"></td>
+				    		</tr>
+				    		<tr>
+				    			<td>父级:</td>
+				    			<td id="parentIdTd"></td>
+				    		</tr>
+				    		<tr>
+				    			<td>名称:</td>
+				    			<td><input class="easyui-textbox" type="text" name="sName" id="sName"></input></td>
+				    		</tr>
+							<tr>
+				    			<td>图片:</td>
+				    			<td><input class="easyui-filebox" type="text" name="listimg" id="listimg"></input></td>
+				    		</tr>
+							<tr>
+				    			<td>置顶:</td>
+				    			<td><input class="easyui-textbox" type="text" name="isTop" id="isTop"></input></td>
+				    		</tr>
+							<tr>
+				    			<td>排序:</td>
+				    			<td><input class="easyui-textbox" type="text" name="cSort" id="cSort"></input></td>
+				    		</tr>
+							<tr>
+				    			<td>首页显示:</td>
+				    			<td><input class="easyui-textbox" type="text" name="isIndex" id="isIndex" value="1"></input></td>
+				    		</tr>
+							<tr>
+				    			<td>首字母:</td>
+				    			<td>
+				    				<select name="aLif">
+				    					<option value="A">A</option><option value="B">B</option><option value="C">C</option>
+				    					<option value="D">D</option><option value="E">E</option><option value="F">F</option>
+										<option value="G">G</option><option value="H">H</option><option value="I">I</option>
+										<option value="J">J</option><option value="K">K</option><option value="L">L</option>
+										<option value="M">M</option><option value="N">N</option><option value="O">O</option>
+										<option value="P">P</option><option value="Q">Q</option><option value="R">R</option>
+										<option value="S">S</option><option value="T">T</option><option value="U">U</option>
+										<option value="V">V</option><option value="W">W</option><option value="X">X</option>
+										<option value="Y">Y</option><option value="Z">Z</option>
+				    				</select>
+								</td>
+				    		</tr>
+							<tr>
+				    			<td>城市:</td>
+				    			<td><input id="cityCode" class="easyui-combobox" 
+									name="city"
+									data-options="
+											url:'data/run.php?c=ShopTypeEui&f=getCityCode',
+											method:'get',
+											valueField:'id',
+											textField:'text',
+											multiple:true,
+											panelHeight:'auto'
+									"></input></td>
+				    		</tr>
+				    		<tr>
+				    			<td>状态:</td>
+				    			<td>
+				    				<select name="cStatus">
+				    					<option value="1">启用</option>
+				    					<option value="0">禁用</option>
+				    				</select>
+				    			</td>
+				    		</tr>
+				    	</table>
+				    </form>
+					<div style="text-align:center;padding:5px">
+				    	<a href="javascript:void(0)" class="easyui-linkbutton" id="subBtn" onclick="submitWin()">提交</a>
+				    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="closeWin()">关闭</a>
+				    </div>
+			    </div>
+			</div>
+		</div>
+	<script type="text/javascript">
+			function onDblClickCell(field,row){
+				$('#w').window('open');
+				$('#cateIdTd').html(row.id);
+				$('#inputId').val(row.id);
+				$('#imgPath').val(row.imgPath);
+				$('#sName').textbox({required:true,value:row.sName});
+				
+				$('#isTop').textbox({required:true,value:row.isTop});
+				$('#cSort').textbox({required:true,value:row.cSort});
+				$('#isIndex').textbox({required:true,value:row.isIndex});
+				
+				$('#cityCode').combobox('setValues', row.city.split(','));
+				
+				var _pid = row.parentId;
+				var _sts = row.cStatus;
+				$('select[name="cStatus"]').find('option').each(function(){
+					if($(this).val()==_sts){
+						$(this).attr('selected',true);
+						return false;
+					}
+				});
+				var _alif = row.aLif;
+				$('select[name="aLif"]').find('option').each(function(){
+					if($(this).val()==_alif){
+						$(this).attr('selected',true);
+						return false;
+					}
+				});
+				$.ajax({
+					url:'data/run.php?c=ShopTypeEui&f=getCateSelectHtml',
+					type:'post',
+					data:'_s=2&_pid=0',
+					success:function(data){
+						$('#parentIdTd').html(data);
+						$('select[name="parentId"]').find('option').each(function(){
+							if($(this).val()==_pid){
+								$(this).attr('selected',true);
+								return false;
+							}
+						});
+					}
+				});			
+			}
+			function openWin(){			
+				$('#w').window('open');
+				$('#cateIdTd').html('');
+				$('#ff').form('reset');
+				$('#ff').form('clear');
+				$('#isIndex').textbox({required:true,value:1});
+				$.ajax({
+					url:'data/run.php?c=ShopTypeEui&f=getCateSelectHtml',
+					type:'post',
+					data:'_s=2&_pid=0',
+					success:function(data){
+						$('#parentIdTd').html(data);
+					}
+				});
+			}
+			function closeWin(){
+				$('#w').window('close');
+			}
+			function submitWin(){
+				$('#ff').form('submit',{
+					url:'data/run.php?c=ShopTypeEui&f=saveShopType',
+				    onSubmit: function(param){
+						var _cityCodeTmp = $('#cityCode').combobox('getValues');
+						param.citycode = _cityCodeTmp.join(',');
+						$('#subBtn').linkbutton('disable');
+				    },
+				    success:function(data){
+						$.messager.alert('提示',data,'Info');
+						$('#subBtn').linkbutton('enable');
+						closeWin();
+						reloadData();
+				    }
+				});
+			}
+			function reloadData(){
+				$('#tg').treegrid('reload');
+			}
+		</script>

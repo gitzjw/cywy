@@ -1,0 +1,124 @@
+<script type="text/javascript" src="src.js"></script>
+
+<table id="dg" data-options="rownumbers:true,singleSelect:true,pagination:true,url:'data/run.php?c=UsersEui&f=getUsersList',method:'get',toolbar:'#tb',onDblClickRow:onDblClickRow">
+    <thead>
+        <tr>
+            <th data-options="field:'id',width:100">
+                编号
+            </th>
+            <th data-options="field:'idCard',width:200">
+                身份证
+            </th>
+            <th data-options="field:'telNumber',width:100">
+                电话号码
+            </th>
+            <th data-options="field:'openId',width:200">
+                OPENID
+            </th>
+            <th data-options="field:'uType',width:240" formatter="formatLY">
+                来源
+            </th>
+            <th data-options="field:'uCreateDate',width:160">
+                注册时间
+            </th>
+			<th data-options="field:'uStatus',width:60" formatter="formatS">
+                状态
+            </th>
+        </tr>
+    </thead>
+</table>
+<div id="tb" style="padding:2px 5px;">
+		用户ID: <input class="easyui-textbox" id="inputId" style="width:110px">
+		身份证: <input class="easyui-textbox" id="inputIdcard" style="width:110px">
+		电话号: <input class="easyui-numberbox" id="inputTel" style="width:110px">
+		<a href="#" class="easyui-linkbutton" iconCls="icon-search" id="sBtn">Search</a>
+</div>
+<div id="w" class="easyui-window" title="编辑用户" data-options="modal:true,closed:true,iconCls:'icon-save'" style="padding:10px;">
+		<div class="easyui-panel" title="" style="width:600px;">
+			<div style="padding:10px 60px 20px 60px">
+			    <form id="ff" method="post">
+			    	<input type="hidden" name="id" id="inputIdForm" value="">
+			    	<table cellpadding="1">
+			    		<tr>
+			    			<td>编号:</td>
+			    			<td id="idTd"></td>
+			    		</tr>
+			    		<tr>
+			    			<td>idCard:</td>
+			    			<td><input class="easyui-textbox" name="idcard" id="idcard"></input></td>							
+			    		</tr>
+						<tr>
+							<td>电话:</td>
+			    			<td><input class="easyui-numberbox" name="tel" id="tel"></input></td>							
+						</tr>
+			    	</table>
+			    </form>
+				<div style="text-align:center;padding:5px">
+			    	<a href="javascript:void(0)" class="easyui-linkbutton"  id="subBtn" onclick="submitWin()">提交</a>
+			    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="closeWin()">关闭</a>
+			    </div>
+		    </div>
+		</div>
+	</div>
+<script type="text/javascript">
+    $(function(){
+        var pager = $('#dg').datagrid().datagrid('getPager'); 
+		$('#sBtn').click(function(){
+			var _id = $('#inputId').val();
+			var _idcard = $('#inputIdcard').val();
+			var _tel = $('#inputTel').val();
+			$('#dg').datagrid('load', {
+			    _idcard: _idcard,
+			    _tel: _tel,
+				_id:_id
+			});
+		});
+    });
+	function formatLY(val,row,index){
+		if(val=='1'){
+			return '微信';
+		}else{
+			return '其它';
+		}
+	}
+	function formatS(val,row,index){
+		if(val=='1'){
+			return '正常';
+		}else{
+			return '异常';
+		}
+	}
+	
+	function onDblClickRow(field,row){
+		$('#w').window('open');
+		$('#idTd').html('');
+		$('#ff').form('reset');
+		$('#ff').form('clear');
+		
+		$('#idTd').html(row.id);
+		$('#inputIdForm').val(row.id);
+		
+		$('#idcard').textbox({value:row.idCard});
+		$('#tel').numberbox({value:row.telNumber});
+	}
+	function closeWin(){
+		$('#w').window('close');
+	}
+	function submitWin(){
+		$('#ff').form('submit',{
+			url:'data/run.php?c=UsersEui&f=saveIdCardAndTel',
+		    onSubmit: function(){
+				$('#subBtn').linkbutton('disable');
+		    },
+		    success:function(data){
+				$.messager.alert('提示',data,'Info');
+				$('#subBtn').linkbutton('enable');
+				closeWin();
+				reloadData();
+		    }
+		});
+	}
+	function reloadData(){
+		$('#dg').datagrid('reload');
+	}
+</script>

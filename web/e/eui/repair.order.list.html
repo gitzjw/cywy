@@ -1,0 +1,147 @@
+<script type="text/javascript" src="src.js"></script>
+
+<table id="dg" data-options="rownumbers:true,singleSelect:true,pagination:true,url:'data/run.php?c=RepairOrderEui&f=getRepairOrderList',method:'get',toolbar:'#tb',onDblClickRow:onDblClickRow">
+    <thead>
+        <tr>
+            <th data-options="field:'id',width:150">
+                订单号
+            </th>
+            <th data-options="field:'uId',width:100">
+            用户ID   
+            </th>
+            <th data-options="field:'wCityName',width:60">
+                城市
+            </th>
+            <th data-options="field:'wTypeName',width:60">
+                邮寄方式
+            </th>
+            <th data-options="field:'roPrice',width:60">
+                价格
+            </th>
+            <th data-options="field:'roCreateDate',width:130">
+                创建时间
+            </th>
+			<th data-options="field:'roStatus',width:80" formatter="formatS">
+                状态
+            </th>
+			<th data-options="field:'roPayCode',width:120">
+                交易流水号
+            </th>
+			<th data-options="field:'roPayDate',width:130">
+                支付时间
+            </th>
+			<th data-options="field:'roExpNum',width:100">
+                物流单号
+            </th>
+			<th data-options="field:'roMark',width:60" >
+                操作
+            </th>
+			
+        </tr>
+    </thead>
+</table>
+<div id="tb" style="padding:2px 5px;">
+		订单号: <input class="easyui-textbox" id="inputId" style="width:110px">
+		用户ID: <input class="easyui-textbox" id="inputUid" style="width:110px">
+		交易流水号: <input class="easyui-textbox" id="inputPayId" style="width:110px">
+		支付时间: <input class="easyui-datebox" id="inputDate" style="width:110px" data-options="onSelect:onSelect">
+		<a href="#" class="easyui-linkbutton" iconCls="icon-search" id="sBtn">Search</a>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-reload" id="reloadBtn">加载全部</a>
+</div>
+<div id="w" class="easyui-window" title="子订单数据" data-options="modal:true,closed:true,iconCls:'icon-save'" style="padding:10px;">
+			<div class="easyui-panel" title="" style="" id="adsHtml">
+			</div>
+			<div class="easyui-panel" title="" style="">
+				<table id="c_dg" data-options="rownumbers:true,singleSelect:true,pagination:true,method:'get'">
+				    <thead>
+				        <tr>
+				            <th data-options="field:'oId',width:150">
+				                订单号
+				            </th>
+				            <th data-options="field:'uId',width:100">
+				             用户ID   
+				            </th>
+				            <th data-options="field:'wTypeName',width:60">
+				                产品名称
+				            </th>
+				            <th data-options="field:'odNum',width:60">
+				                数量
+				            </th>
+				            <th data-options="field:'odPrice',width:60">
+				                价格
+				            </th>
+							<th data-options="field:'odStatus',width:80" formatter="formatS">
+				                状态
+				            </th>
+							<th data-options="field:'odExpNum',width:100">
+				                物流单号
+				            </th>							
+				        </tr>
+				    </thead>
+				</table>
+			</div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        var pager = $('#dg').datagrid().datagrid('getPager'); // get the pager of datagrid
+		$('#sBtn').click(function(){
+			var _id = $('#inputId').val();
+			var _uid = $('#inputUid').val();
+			var _payid = $('#inputPayId').val();
+			var _date = $('#inputDate').val();
+			$('#dg').datagrid('load', {
+			    _id: _id,
+			    _uid: _uid,
+				_payid:_payid,
+				_date:_date
+			});
+		});
+		$("#reloadBtn").click(function(){
+			$('#inputId').textbox({value:''});
+			$('#inputUid').textbox({value:''});
+			$('#inputPayId').textbox({value:''});
+			$('#inputDate').datebox({value:''});
+			$('#inputDate').val('');
+			$('#dg').datagrid('load',{});
+		});
+    });	
+	function onSelect(date){
+		var y = date.getFullYear();
+		var m = date.getMonth()+1;
+		var d = date.getDate();
+		$('#inputDate').val(m+'/'+d+'/'+y)
+	}
+	function formatS(val,row,index){
+		var _str = '';
+		switch (val) {
+			case '1' :
+				_str = '订单已创建';
+				break;
+			case '2' :
+				_str = '订单支付成功';
+				break;
+			case '3' :
+				_str = '已经发送物流';
+				break;
+			case '9' :
+				_str = '订单完成';
+				break;
+			default :
+				_str = '订单已创建';
+				break;
+		}
+		return _str;
+	}
+	function onDblClickRow(field,row){		
+		$('#w').window('open');
+		$('#adsHtml').html('<h4>邮寄地址：'+row.mAddress+'</h4><h4>回寄地址：'+row.bAddress+'</h4><h4>上门地址：'+row.cAddress+'</h4>');
+		var _oid = row.id;
+		//var apager = $('#c_dg').datagrid().datagrid('getPager');		
+		$('#c_dg').datagrid({
+			url:'data/run.php?c=RepairOrderDetailEui&f=getRepairOrderDetailList',
+			queryParams:{
+				_oid:_oid
+			}			
+		})
+	}
+</script>

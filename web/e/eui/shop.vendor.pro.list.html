@@ -1,0 +1,245 @@
+<script type="text/javascript" src="src.js"></script>
+
+<table id="dg" data-options="rownumbers:true,singleSelect:true,pagination:true,url:'data/run.php?c=ShopVendorProEui&f=getShopVendorProList',method:'get',toolbar:'#tb',onDblClickRow:onDblClickRow">
+    <thead>
+        <tr>
+            <th data-options="field:'id',width:100">
+                编号
+            </th>
+            <th data-options="field:'vName',width:100">
+                供应商
+            </th>
+            <th data-options="field:'pTitle',width:250">
+                产品
+            </th>
+            <th data-options="field:'price',width:100">
+                价格
+            </th>
+			<th data-options="field:'pmark',width:140">
+                备注
+            </th>
+        </tr>
+    </thead>
+</table>
+<div id="tb" style="padding:2px 5px;">		
+		供应商: <strong id="gys"></strong>
+		主分类：<strong id="zhuType"></strong>
+		次分类：<strong id="ciType"></strong>
+		商品：<strong id="proSpan"></strong>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-search" id="sBtn">Search</a>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-add" id="addBtn">添加报价</a>
+</div>
+<div id="w" class="easyui-window" title="编辑报价" data-options="modal:true,closed:true,iconCls:'icon-save'" style="padding:10px;">
+			<div class="easyui-panel" title="" style="width:600px">
+				<div style="padding:10px 60px 20px 60px">
+				    <form id="ff" method="post">
+				    	<input type="hidden" name="id" id="inputId" value="">
+				    	<table cellpadding="2">
+				    		<tr>
+				    			<td align="right">编号:</td>
+				    			<td id="idTd" colspan="3"></td>
+				    		</tr>
+				    		<tr>
+				    			<td align="right">供应商:</td>
+				    			<td id="vIdTD" colspan="3"></td>
+				    		</tr>
+							<tr>
+				    			<td align="right">主分类:</td>
+				    			<td id="wTypePidTD"></td>
+								<td align="right">次分类:</td>
+				    			<td id="wTypeTD"></td>
+				    		</tr>
+							<tr>
+				    			<td align="right">产品:</td>
+				    			<td id="pIdTD" colspan="3"></td>
+				    		</tr>
+							<tr>
+				    			<td align="right">价格:</td>
+				    			<td colspan="3"><input class="easyui-textbox" type="text" name="price" id="price"></input></td>
+				    		</tr>
+							<tr>
+				    			<td align="right">备注:</td>
+				    			<td colspan="3"><input class="easyui-textbox" type="text" name="pmark" id="pmark"></input></td>
+				    		</tr>
+				    	</table>
+				    </form>
+					<div style="text-align:center;padding:5px">
+				    	<a href="javascript:void(0)" class="easyui-linkbutton" id="subBtn"  onclick="submitWin()">提交</a>
+				    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="closeWin()">关闭</a>
+				    </div>
+			    </div>
+			</div>
+		</div>
+<script type="text/javascript">
+    $(function(){
+        var pager = $('#dg').datagrid().datagrid('getPager'); // get the pager of datagrid
+		$('#sBtn').click(function(){
+			var _vid = $('#gys').find('select[name="vId"]').val();
+			var _wtypepid = $('#zhuType').find('select').val();
+			var _wtype = $('#ciType').find('select').val();
+			var _pid = $('#proSpan').find('select').val();
+			$('#dg').datagrid('load', {
+			    _vid: _vid,
+			    _wtypepid: _wtypepid,
+				_wtype:_wtype,
+				_pid:_pid
+			});
+		});
+		$('#addBtn').click(function(){
+			$('#w').window('open');
+			$('#idTd').html('');
+			$('#inputId').val('');
+			//$('#ff').form('reset');
+			//$('#ff').form('clear');
+		});
+    });
+	//一级分类
+	$.ajax({
+		url:'data/run.php?c=ShopTypeEui&f=getShopVendorSelectHtml',
+		type:'post',
+		data:'_pid=0&_name=wTypePid',
+		success:function(data){
+			$('#wTypePidTD').html(data);
+			$('#zhuType').html(data);		
+			$('#zhuType').find('select').attr('onchange','searchWtype(this.value)');	
+			$('#zhuType').find('select').attr('name','swTypePid');	
+			var _pid = $('select[name="wTypePid"]').find('option:eq(0)').val();
+			wTypeAjax(_pid);
+		}
+	});
+	function searchWtype(pid){
+		$.ajax({
+			url:'data/run.php?c=ShopTypeEui&f=getShopVendorSelectHtml',
+			type:'post',
+			data:'_pid='+pid,
+			success:function(data){
+				$('#ciType').html(data);
+				$('#ciType').find('select').attr('name','swType');	
+				$('#ciType').find('select').attr('onchange','searchPro(this.value)');
+				var _wid = $('#ciType').find('select').val();
+				searchPro(_wid);
+			}
+		});		
+	}
+	function searchPro(wid){
+		$.ajax({
+			url:'data/run.php?c=ShopVendorProEui&f=getShopProWtypeHtml',
+			type:'post',
+			data:'wType='+wid+'&_name=sProId',
+			success:function(data){
+				$('#proSpan').html(data);			
+			}
+		});		
+	}
+	
+	function wTypeAjax(pid){
+		$.ajax({
+		url:'data/run.php?c=ShopTypeEui&f=getShopVendorSelectHtml',
+		type:'post',
+		data:'_pid='+pid,
+		success:function(data){
+			$('#wTypeTD').html(data);
+			$('select[name="wType"]').attr('onchange','wTypeProAjax(this.value)');
+			var _wid = $('select[name="wType"]').find('option:eq(0)').val();
+			wTypeProAjax(_wid);
+		}
+		});		
+	}
+	function wTypeProAjax(wid){
+		$.ajax({
+		url:'data/run.php?c=ShopVendorProEui&f=getShopProWtypeHtml',
+		type:'post',
+		data:'wType='+wid+'&_name=pId',
+		success:function(data){
+			$('#pIdTD').html(data);			
+		}
+		});		
+	}
+	$.ajax({
+		url:'data/run.php?c=ShopVendorEui&f=getShopVendorSelectHtml',
+		type:'post',
+		data:'',
+		success:function(data){
+			$('#vIdTD').html(data);
+			$('#gys').html(data);
+		}
+	});
+	
+	function formatS(val,row,index){
+		if(val=='1'){
+			return '正常';
+		}else{
+			return '异常';
+		}
+	}
+	
+	function onDblClickRow(field,row){
+		$('#w').window('open');
+		$('#idTd').html(row.id);
+		$('#inputId').val(row.id);
+		
+		$('#price').textbox({required:true,value:row.price});
+		
+		var _vId = row.vId;
+		$('select[name="vId"]').find('option').each(function(){
+			if($(this).val()==_vId){
+				$(this).attr('selected',true);
+				return false;
+			}
+		});
+		var _wTypePid = row.wTypePid;
+		$('select[name="wTypePid"]').find('option').each(function(){
+			if($(this).val()==_wTypePid){
+				$(this).attr('selected',true);
+				return false;
+			}
+		});
+		
+		var _wType = row.wType;
+		$.ajax({
+			url:'data/run.php?c=ShopTypeEui&f=getShopVendorSelectHtml',
+			type:'post',
+			data:'_pid='+_wTypePid,
+			success:function(data){
+				$('#wTypeTD').html(data);
+				$('select[name="wType"]').find('option').each(function(){
+					if($(this).val()==_wType){
+						$(this).attr('selected',true);
+						return false;
+					}
+				});
+				$('select[name="wType"]').attr('onchange','wTypeProAjax(this.value)');
+				wTypeProAjax(_wType);
+			}
+		});				
+		
+		var _pId = row.pId;
+		$('select[name="pId"]').find('option').each(function(){
+			if($(this).val()==_pId){
+				$(this).attr('selected',true);
+				return false;
+			}
+		});
+		
+	}
+	function closeWin(){
+		$('#w').window('close');
+	}
+	function submitWin(){
+		$('#ff').form('submit',{
+			url:'data/run.php?c=ShopVendorProEui&f=saveShopVendorPro',
+		    onSubmit: function(){
+				$('#subBtn').linkbutton('disable');
+		    },
+		    success:function(data){
+				$.messager.alert('提示',data,'Info');
+				$('#subBtn').linkbutton('enable');
+				closeWin();
+				reloadData();
+		    }
+		});
+	}
+	function reloadData(){
+		$('#dg').datagrid('reload');
+	}
+</script>

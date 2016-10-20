@@ -1,0 +1,68 @@
+<script type="text/javascript" src="src.js"></script>
+
+<table id="dg" data-options="rownumbers:true,singleSelect:true,pagination:true,url:'data/run.php?c=ActivityEui&f=getActivityList&_t=20160405',method:'get',toolbar:'#tb'">
+    <thead>
+        <tr>
+            <th data-options="field:'id',width:100">
+                编号
+            </th>
+            <th data-options="field:'city',width:160">
+                城市
+            </th>
+			<th data-options="field:'shop',width:260">
+                店名
+            </th>
+            <th data-options="field:'xm',width:80">
+                姓名
+            </th>
+            <th data-options="field:'tel',width:150">
+                电话
+            </th>
+            <th data-options="field:'xb',width:160">
+                性别
+            </th>
+			 <th data-options="field:'exp',width:160">
+                工作经验
+            </th>
+            <th data-options="field:'lv',width:160">
+                级别
+            </th>
+			<th data-options="field:'zk',width:160">
+                目前状况
+            </th>
+			<th data-options="field:'money',width:160">
+                期望薪资
+            </th>
+			<th data-options="field:'zx',width:160">
+                擅长造型
+            </th>
+			<th data-options="field:'mmmr',width:160">
+                猫咪美容
+            </th>
+			<th data-options="field:'iszs',width:160">
+                住宿
+            </th>
+			<th data-options="field:'cdate',width:160">
+                日期
+            </th>
+			<th data-options="field:'remark',width:160">
+                备注
+            </th>
+        </tr>
+    </thead>
+</table>
+<div id="tb" style="padding:2px 5px;">
+		城市: <input class="easyui-textbox" id="inputCity" style="width:190px"  data-options="prompt:'请输入区域：北京、上海、深圳'">
+		<a href="#" class="easyui-linkbutton" iconCls="icon-search" id="sBtn">Search</a>
+</div>
+<script type="text/javascript">
+    $(function(){
+        var pager = $('#dg').datagrid().datagrid('getPager'); // get the pager of datagrid       
+        $('#sBtn').click(function(){
+			var _city = $('#inputCity').val();			
+			$('#dg').datagrid('load', {
+			    _city: _city
+			});
+		});
+    });
+</script>

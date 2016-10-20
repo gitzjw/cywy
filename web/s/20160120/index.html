@@ -1,0 +1,145 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>萌工社</title>
+<meta name="author" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" type="text/css" href="css/css1.css" />
+<script src="/public/js/jquery-1.8.3.min.js"></script>       
+
+</head>
+
+<body >
+<section class=" zyz join">
+<img src="images/xfdb.jpg" width="100%">
+<div class="dh_ts">洗了1年狗，剪了1年毛。春节将至，是该回家和亲人团聚了。为了解决同学们买票难的问题。萌工社作为宠物行业从业者服务平台，开通3条幸福大巴专线，免费送大家回家过年。<br /><br />
+萌工社将于2015年01月22日，根据报名情况，确定最终3条专线的终点站和途径停靠站，微信推送公示。<br />
+
+<strong>仅限宠物店工作人员报名哟~</strong>
+</div>
+ <form action="#" >
+                <input type="hidden" name="run" value="saveActivityTmp">
+				<input type="hidden" name="action" value="Activity">
+				<input type="hidden" name="_t" value="20160120">
+				<table width="100%" class="tbg" cellpadding="0" cellspacing="0">
+				<td>始发城市</td><td class="yes"><p ><input type="radio" name="city" value="北京">北京</p><p><input type="radio"  name="city" value="上海"> 上海</p><p><input type="radio"  name="city" value="深圳"> 深圳</p></td>
+				</tr>
+				<tr>
+				<td>目的地</td><td><input type="text" name="ads" placeholder="请填写您的目的地"></td>
+				</tr>
+				
+				<tr>
+				<td>姓名</td><td><input type="text" name="xm" placeholder="输入您的姓名"></td>
+				</tr>
+				<tr>
+				<td width="80">联系电话</td><td><input name="tel" type="text" placeholder="输入您的联系方式"></td>
+				</tr>
+				
+				<tr>
+				<td>宠物店</td><td><input type="text" name="shop" placeholder="填写目前工作所在的宠物店"></td>
+				</tr>
+				<tr>
+				<td>职业</td><td><input type="text" name="occupation" placeholder="输入您的职业（美容师、助理...）"></td>
+				</tr>
+				<!--<tr>
+				<td >备注</td><td><input type="text" placeholder="随便写点什么，便于我们更加了解你"></td>
+				</tr>-->
+				<tr><td colspan="2"><p style="margin-top:20px;"><span style="margin-bottom:10px;font-size:16px;"><strong style="color:#f1be00; float:left;margin-right:5px;font-weight:normal">|</strong> 报名须知</span>
+				<span >1、我们会根据停靠站点的报名量，确定行车路线</span>
+				<span >2、幸福大巴始发城市：北京、上海、深圳</span>
+				<span>3、发车时间：2016年02月04日  09:00</span>
+				<span>4、仅限宠物店内工作人员报名</span>
+				</p>
+				</td></tr>
+				</table>
+</form>
+</section>
+
+  <div class="Buy_btn4 submit_order clear"> <a href="#" id="btn_s">立即报名</a> </div>
+  <script>
+						var ComClass = {
+						    
+						    post: function(params, callback){
+						        $.post("/c/run.php", params, function(data, textStatus){
+						            callback(data);
+						        });
+						    },
+						    
+						    href: function(tpl){
+						        window.location.href = this.webSite + tpl;
+						    }
+						    
+						}
+						var _oid='';
+						var _s_u_b=0;
+						function getFormValue() {
+							var _valStr = '';
+							$('form input:text').each(function() {
+								_valStr += $(this).attr('name')+'='+$(this).val();
+								_valStr += '& ';
+							});		
+							$('form input:hidden').each(function() {
+								_valStr += $(this).attr('name')+'='+$(this).val();
+								_valStr += '& ';
+							});				
+							if(typeof($('input[name="city"]:checked').val())=='undefined'){
+								_valStr += '&city=';	
+							}else{
+								_valStr += '&city='+$('input[name="city"]:checked').val();
+							}							
+							_valStr += '& ';		
+							return _valStr;
+						}
+						$('#btn_s').click(
+								function() {
+									var _val = getFormValue();
+									_val += '&_oid=' + _oid;
+									if (_s_u_b == 0) {
+										++_s_u_b;
+										ComClass.post(_val, callbackData);
+									}
+								});
+						function callbackData(data) {
+							var _d = eval('(' + data + ')');
+							if (_d.code == '1') {
+								_e = _d.msg;
+								alert(_e);
+								window.location.reload();
+								//_oid = _e.oid;
+								//onBridgeReady();
+							} else {
+								_s_u_b = 0;
+								alert(_d.msg);
+							}
+						}
+						
+						function onBridgeReady() {
+							WeixinJSBridge.invoke('getBrandWCPayRequest', {
+								"appId" : _e.appid, // 公众号名称，由商户传入
+								"timeStamp" : _e.timestamp+"", // 时间戳，自1970年以来的秒数
+								"nonceStr" : _e.newRndstr, // 随机串
+								"package" : "prepay_id=" + _e.prepay_id,
+								"signType" : "MD5", // 微信签名方式:
+								"paySign" : _e.newSign
+							// 微信签名
+							}, function(res) {
+								// 使用以下方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回 ok，但并不保证它绝对可靠。
+								if (res.err_msg == "get_brand_wcpay_request:ok") {
+									alert('支付成功');
+									WeixinJSBridge.invoke('closeWindow', {}, function(res) {
+									});
+								} else {
+									_s_u_b = 0;
+									alert('支付失败，请重新进行操作');
+									// WeixinJSBridge.invoke('closeWindow', {}, function(res){});
+								}
+							});
+						}						
+					</script>
+
+</body>
+</html>

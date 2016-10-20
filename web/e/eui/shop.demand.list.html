@@ -1,0 +1,27 @@
+<script type="text/javascript" src="src.js"></script>
+
+<table id="dg" data-options="rownumbers:true,singleSelect:true,pagination:true,url:'data/run.php?c=ShopDemandEui&f=getShopDemandList',method:'get',toolbar:'#tb'">
+    <thead>
+        <tr>
+            <th data-options="field:'id',width:100">
+                编号
+            </th>
+            <th data-options="field:'tel',width:100">
+               电话
+            </th>
+            <th data-options="field:'content',width:200">
+                内容
+            </th>
+            <th data-options="field:'createTime',width:160">
+                时间
+            </th>
+        </tr>
+    </thead>
+</table>
+<div id="tb" style="padding:2px 5px;">
+</div>
+<script type="text/javascript">
+    $(function(){
+        var pager = $('#dg').datagrid().datagrid('getPager'); 
+    });
+</script>

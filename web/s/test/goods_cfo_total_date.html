@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <title>萌工社 - 月销售商品</title>
+        <link rel="stylesheet" type="text/css" href="/public/js/jq-eui-src/themes/metro/easyui.css">
+        <link rel="stylesheet" type="text/css" href="/public/js/jq-eui-src/themes/mobile.css">
+        <link rel="stylesheet" type="text/css" href="/public/js/jq-eui-src/themes/icon.css">
+        <script type="text/javascript" src="/public/js/jq-eui-src/jquery.min.js">
+        </script>
+        <script type="text/javascript" src="/public/js/jq-eui-src/jquery.easyui.min.js">
+        </script>
+        <script type="text/javascript" src="/public/js/jq-eui-src/locale/easyui-lang-zh_CN.js">
+        </script>
+        <script type="text/javascript" src="/public/js/jq-eui-src/jquery.easyui.mobile.js">
+        </script>
+    </head>
+    <body>
+        <table id="dg" data-options="header:'#hh',url:'/c/run.php?action=ShopMarketing&run=getShopGoodsDate',singleSelect:true,border:false,fit:true,fitColumns:true,scrollbarSize:0">
+            <thead>
+                <tr>
+                    <th data-options="field:'sptm',width:80">
+                        条形码
+                    </th>
+                    <th data-options="field:'pTitle',width:80">
+                        商品名称
+                    </th>
+                    <th data-options="field:'pTotal',width:80">
+                        数量
+                    </th>
+					<th data-options="field:'ePrice',width:80">
+                        单价
+                    </th>
+					<th data-options="field:'pTotalPrice',width:80">
+                        总价
+                    </th>
+                </tr>
+            </thead>
+        </table>
+        <div id="hh">
+            <div class="m-toolbar">
+                <div class="m-title">
+                    <select class="easyui-combobox" id="city_city" style="width:100px">
+                        <option value="">请选择城市</option>
+                        <option value="100001">北京</option>
+                        <option value="200001">上海</option>
+                        <option value="300001">深圳</option>
+                    </select>
+                    <input class="easyui-datebox" id="date_date" prompt="选择要查询的月份" data-options="editable:false,panelWidth:220,panelHeight:240,iconWidth:30" style="width:200px">
+					<a href="javascript:void(0)" id="loadData" class="easyui-linkbutton" style="width:100px;height:30px"><span style="font-size:16px">加载</span></a>
+                </div>
+            </div>
+        </div>
+        <script>
+                        $(function(){
+                            $('#dg').datagrid({});
+                        });
+            			$('#loadData').click(function(){
+            				$('#dg').datagrid('load', {
+            					city:$('#city_city').combobox('getValue'),
+            					date: $('#date_date').datebox('getValue')
+            				});
+            			});
+                    
+        </script>
+    </body>
+</html>

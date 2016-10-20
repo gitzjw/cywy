@@ -1,0 +1,146 @@
+<script type="text/javascript" src="src.js"></script>
+
+<table id="dg" data-options="rownumbers:true,singleSelect:true,pagination:true,url:'data/run.php?c=ShopVendorEui&f=getShopVendorList',method:'get',toolbar:'#tb',onDblClickRow:onDblClickRow">
+    <thead>
+        <tr>
+            <th data-options="field:'id',width:100">
+                编号
+            </th>
+            <th data-options="field:'vName',width:100">
+                供应商
+            </th>
+            <th data-options="field:'vTel',width:150">
+                电话
+            </th>
+            <th data-options="field:'vEmail',width:100">
+                邮箱
+            </th>
+			<th data-options="field:'vAddress',width:140">
+                地址
+            </th>
+			<th data-options="field:'vStatus',width:60" formatter="formatS">
+                状态
+            </th>
+        </tr>
+    </thead>
+</table>
+<div id="tb" style="padding:2px 5px;">		
+		电话号: <input class="easyui-numberbox" id="inputTel" style="width:110px">
+		供应商: <input class="easyui-textbox" id="inputXM" style="width:110px">
+		邮箱: <input class="easyui-textbox" id="inputIdcard" style="width:110px">
+		<a href="#" class="easyui-linkbutton" iconCls="icon-search" id="sBtn">Search</a>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-add" id="addBtn">添加供应商</a>
+</div>
+<div id="w" class="easyui-window" title="编辑供应商" data-options="modal:true,closed:true,iconCls:'icon-save'" style="padding:10px;">
+			<div class="easyui-panel" title="" style="width:500px">
+				<div style="padding:10px 60px 20px 60px">
+				    <form id="ff" method="post">
+				    	<input type="hidden" name="id" id="inputId" value="">
+				    	<table cellpadding="5">
+				    		<tr>
+				    			<td>编号:</td>
+				    			<td id="idTd"></td>
+				    		</tr>
+				    		<tr>
+				    			<td>供应商:</td>
+				    			<td><input class="easyui-textbox" type="text" name="vName" id="vName"></input></td>
+				    		</tr>
+							<tr>
+				    			<td>电话:</td>
+				    			<td><input class="easyui-textbox" type="text" name="vTel" id="vTel"></input></td>
+				    		</tr>
+							<tr>
+				    			<td>邮箱:</td>
+				    			<td><input class="easyui-textbox" type="text" name="vEmail" id="vEmail"></input></td>
+				    		</tr>
+							<tr>
+				    			<td>地址:</td>
+				    			<td><input class="easyui-textbox" type="text" name="vAddress" id="vAddress"></input></td>
+				    		</tr>
+				    		<tr>
+				    			<td>状态:</td>
+				    			<td>
+				    				<select name="vStatus">
+				    					<option value="1">启用</option>
+				    					<option value="0">禁用</option>
+				    				</select>
+				    			</td>
+				    		</tr>
+				    	</table>
+				    </form>
+					<div style="text-align:center;padding:5px">
+				    	<a href="javascript:void(0)" class="easyui-linkbutton" id="subBtn"  onclick="submitWin()">提交</a>
+				    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="closeWin()">关闭</a>
+				    </div>
+			    </div>
+			</div>
+		</div>
+<script type="text/javascript">
+    $(function(){
+        var pager = $('#dg').datagrid().datagrid('getPager'); // get the pager of datagrid
+		$('#sBtn').click(function(){
+			var _idcard = $('#inputIdcard').val();
+			var _tel = $('#inputTel').val();
+			var _xm = $('#inputXM').val();
+			$('#dg').datagrid('load', {
+			    _idcard: _idcard,
+			    _tel: _tel,
+				_xm: _xm		
+			});
+		});
+		$('#addBtn').click(function(){
+			$('#w').window('open');
+			$('#idTd').html('');
+			$('#ff').form('reset');
+			$('#ff').form('clear');
+		});
+    });
+	
+	function formatS(val,row,index){
+		if(val=='1'){
+			return '正常';
+		}else{
+			return '异常';
+		}
+	}
+	
+	function onDblClickRow(field,row){
+		$('#w').window('open');
+		$('#idTd').html(row.id);
+		$('#inputId').val(row.id);
+		
+		$('#vName').textbox({required:true,value:row.vName});
+		$('#vAddress').textbox({required:true,value:row.vAddress});
+		$('#vTel').textbox({required:true,value:row.vTel});
+		$('#vEmail').textbox({required:true,value:row.vEmail});
+		
+		_sts = row.vStatus;
+		$('select[name="vStatus"]').find('option').each(function(){
+			if($(this).val()==_sts){
+				$(this).attr('selected',true);
+				return false;
+			}
+		});
+		
+	}
+	function closeWin(){
+		$('#w').window('close');
+	}
+	function submitWin(){
+		$('#ff').form('submit',{
+			url:'data/run.php?c=ShopVendorEui&f=saveShopVendor',
+		    onSubmit: function(){
+				$('#subBtn').linkbutton('disable');
+		    },
+		    success:function(data){
+				$.messager.alert('提示',data,'Info');
+				$('#subBtn').linkbutton('enable');
+				closeWin();
+				reloadData();
+		    }
+		});
+	}
+	function reloadData(){
+		$('#dg').datagrid('reload');
+	}
+</script>

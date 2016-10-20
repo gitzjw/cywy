@@ -1,0 +1,365 @@
+<script type="text/javascript" src="src.js"></script>
+
+<table id="dg" data-options="rownumbers:true,singleSelect:true,pagination:true,url:'data/run.php?c=InsEui&f=getInsList',method:'get',toolbar:'#tb',onDblClickRow:onDblClickRow,onRowContextMenu:onRowContextMenu">
+    <thead>
+        <tr>
+        	<th data-options="field:'id',width:100">
+              编号
+            </th>
+            <th data-options="field:'iInsId',width:100">
+                保险单号
+            </th>
+			<th data-options="field:'iStart',width:200">
+                开始时间
+            </th>
+            <th data-options="field:'iEnd',width:200">
+                结束时间
+            </th>
+            <th data-options="field:'iName',width:160">
+                保险人
+            </th>
+			<th data-options="field:'iUpdateDate',width:200">
+                更新时间
+            </th>
+			<th data-options="field:'iUserId',width:100">
+                用户ID
+            </th>
+			<th data-options="field:'iCreateDate',width:200">
+                建立时间
+            </th>
+			<th data-options="field:'iStatus',width:60" formatter="formatS">
+                状态
+            </th>
+        </tr>
+    </thead>
+</table>
+<div id="tb" style="padding:2px 5px;">
+		姓名: <input class="easyui-textbox" id="inputXM" style="width:110px">
+		用户ID: <input class="easyui-textbox" id="inputUid" style="width:110px">
+		开始时间: <input class="easyui-datebox" id="inputStartDate" style="width:110px">
+		结束时间: <input class="easyui-datebox" id="inputEndDate" style="width:110px">		
+		<a href="#" class="easyui-linkbutton" iconCls="icon-search" id="sBtn">Search</a>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-add" id="addBtn">添加保单</a>
+</div>
+<div id="w" class="easyui-window" title="编辑保单" data-options="modal:true,closed:true,iconCls:'icon-save'" style="padding:10px;">
+			<div class="easyui-panel" title="" style="width:500px">
+				<div style="padding:10px 60px 20px 60px">
+				    <form id="ff" method="post">
+				    	<input type="hidden" name="id" id="inputId" value="">
+						<input type="hidden" name="iUserId" id="inputUserId" value="">
+				    	<table cellpadding="5">
+				    		<tr>
+				    			<td>编号:</td>
+				    			<td id="idTd"></td>
+				    		</tr>
+							<tr>
+				    			<td>保险单号:</td>
+				    			<td><input class="easyui-textbox" type="text" name="iInsId" id="iInsIdText" ></input></td>
+				    		</tr>
+							<tr>
+				    			<td>保险分类:</td>
+				    			<td id="wTypeTd"></td>
+				    		</tr>
+				    		<tr>
+				    			<td>保险人:</td>
+				    			<td id="iNameTd"></td>
+				    		</tr>
+				    		<tr>
+				    			<td>客户经理:</td>
+				    			<td id="iJlTd"></td>
+				    		</tr>
+							<tr>
+				    			<td>保险专员:</td>
+				    			<td id="iZyTd"></td>
+				    		</tr>
+							<tr>
+				    			<td>开始时间:</td>
+				    			<td><input class="easyui-datetimebox" name="iStart" id="iStart"></input></td>
+				    		</tr>
+							<tr>
+				    			<td>持续时间:</td>
+				    			<td>
+				    				<select name="iSpan">
+				    					<option value="45">45天</option>
+	    							</select>
+				    			</td>
+				    		</tr>
+				    		<tr>
+				    			<td>状态:</td>
+				    			<td>
+				    				<select name="iStatus">
+				    					<option value="1">投保</option>
+				    					<option value="0">未投保</option>
+				    				</select>
+				    			</td>
+				    		</tr>
+				    	</table>
+				    </form>
+					<div style="text-align:center;padding:5px">
+				    	<a href="javascript:void(0)" class="easyui-linkbutton" id="subBtn" onclick="submitWin()">提交</a>
+				    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="closeWin()">关闭</a>
+				    </div>
+			    </div>
+			</div>
+		</div>
+
+<div id="menu" class="easyui-menu" style="width: 50px; display: none;">
+    <!--放置一个隐藏的菜单Div-->
+    <div data-options="iconCls:'icon-tip'" onclick="sendMsg(1)">保单</div>
+    <div data-options="iconCls:'icon-tip'" onclick="sendMsg(2)">出险</div>
+    <div data-options="iconCls:'icon-tip'" onclick="sendMsg(3)">生日</div>
+	<div data-options="iconCls:'icon-tip'" onclick="sendMsg(4)">到期提醒</div>
+	<div data-options=""  class="menu-sep"></div>
+	<div data-options="iconCls:'icon-tip'" onclick="clearIns(3)">取消</div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        var pager = $('#dg').datagrid().datagrid('getPager'); // get the pager of datagrid
+		$('#sBtn').click(function(){
+			var _end = $('#inputEndDate').datetimebox('getValue');;
+			var _start = $('#inputStartDate').datetimebox('getValue');;
+			var _xm = $('#inputXM').val();
+			var _uid = $('#inputUid').val();
+			$('#dg').datagrid('load', {
+			    _end: _end,
+			    _start: _start,
+				_xm: _xm,
+				_uid: _uid,				
+			});
+		});
+		$('#addBtn').click(function(){
+			$('#w').window('open');
+			$('#idTd').html('');
+			$('#ff').form('reset');
+			$('#ff').form('clear');
+			//$('#iInsIdText').textbox({value:'000006252992088'});
+			$.ajax({
+					url:'data/run.php?c=InsMemberEui&f=getInsMemberDisAllSelect',
+					type:'post',
+					data:'',
+					success:function(data){						
+						$('#iNameTd').html(data);
+						$('select[name="iInsuerId"]').find('option').each(function(){
+							if($(this).val()){
+								$(this).attr('selected',true);
+								return false;
+							}
+						});
+					}
+				});
+			
+			$('select').find('option:eq(0)').attr('selected',true);
+			//$('select[name="smIdTwo"]').find("option:last").attr('selected',true);
+			$('select[name="wType"]').find('option').removeAttr("selected");
+			$('select[name="wType"]').find('option[value="5"]').attr("selected","selected");
+			$('select[name="wType"]').val(5);
+			$('select[name="iSpan"]').find('option').removeAttr("selected");
+			$('select[name="iSpan"]').find('option[value="45"]').attr("selected","selected");
+			$('select[name="iSpan"]').val(45);
+			$('select[name="smIdTwo"]').find('option').removeAttr("selected");
+			$('select[name="smIdTwo"]').find('option[value="17"]').attr("selected","selected");
+			$('select[name="smIdTwo"]').val(17);
+		});
+    });
+	function defaultForm(){
+		$.ajax({
+				url:'data/run.php?c=WebTypeEui&f=getChildSelectHtml',
+				type:'post',
+				data:'_name=wType&_fid=1',
+				success:function(data){
+					$('#wTypeTd').html(data);
+				}
+			});		
+			$.ajax({
+					url:'data/run.php?c=SerMemberEui&f=getSerMemberAllSelect',
+					type:'post',
+					data:'_name=smIdOne',
+					success:function(data){
+						$('#iJlTd').html(data);
+						$('#iZyTd').html(data);
+						$('select[name="smIdOne"]').find('option').each(function(){
+							if($(this).val()){
+								$(this).attr('selected',true);
+								return false;
+							}
+						});
+						$('select[name="smIdOne"]:eq(1)').attr('name','smIdTwo');						
+					}
+				});
+	}
+	defaultForm();
+	function formatS(val,row,index){
+		if(val=='1'){
+			return '<strong style="color:green">正常</strong>';
+		}else if(val=='2'){
+			return '<strong style="color:red">过期</strong>';
+		}else if(val=='3'){
+			return '<strong style="color:#A9A9A9">已取消</strong>';
+		}else{
+			return '<strong style="color:">未投保</strong>';
+		}
+	}
+	function onDblClickRow(field,row){
+		$('#w').window('open');
+		$('#idTd').html(row.id);
+		$('#inputId').val(row.id);
+		$('#inputUserId').val(row.iUserId);
+		//$('#iInsIdText').textbox({value:'000006252992088'});
+		$('#iInsIdText').textbox({value:row.iInsId});
+		
+		var _yyyy = row.iStart;
+		$('#iStart').datetimebox("setValue",_yyyy);
+		
+		var _sts = row.iStatus;
+		$('select[name="iStatus"]').find('option').removeAttr("selected");
+		$('select[name="iStatus"]').find('option[value="'+_sts+'"]').attr("selected","selected");
+		$('select[name="iStatus"]').val(_sts);
+		/*
+		$('select[name="iStatus"]').find('option').each(function(){
+			if($(this).val()==_sts){
+				$(this).attr('selected',true);
+				return false;
+			}
+		});
+		*/
+		var _iInsuerId = row.iInsuerId;
+		$.ajax({
+				url:'data/run.php?c=InsMemberEui&f=getInsMemberAllSelect',
+				type:'post',
+				data:'',
+				success:function(data){						
+					$('#iNameTd').html(data);
+					/*
+					$('select[name="iInsuerId"]').find('option').each(function(){
+						if($(this).val()==_iInsuerId){
+							$(this).attr('selected',true);
+							return false;
+						}
+					});
+					*/
+					$('select[name="iInsuerId"]').find('option').removeAttr("selected");
+					$('select[name="iInsuerId"]').find('option[value="'+_iInsuerId+'"]').attr("selected","selected");
+					$('select[name="iInsuerId"]').val(_iInsuerId);
+				}
+		});
+		var _wType = row.wType;
+		$('select[name="wType"]').find('option').removeAttr("selected");
+		$('select[name="wType"]').find('option[value="'+_wType+'"]').attr("selected","selected");
+		$('select[name="wType"]').val(_wType);
+		/*
+		$('select[name="wType"]').find('option').each(function(){
+							if($(this).val()==_wType){
+								$(this).attr('selected',true);
+								return false;
+							}
+						});
+		*/
+		var _smIdOne = row.smIdOne;
+		/*
+		$('select[name="smIdOne"]').find('option').each(function(){
+			if($(this).val()==_smIdOne){
+				$(this).attr('selected',true);
+				return false;
+			}
+		});
+		*/
+		$('select[name="smIdOne"]').find('option').removeAttr("selected");
+		$('select[name="smIdOne"]').find('option[value="'+_smIdOne+'"]').attr("selected","selected");
+		$('select[name="smIdOne"]').val(_smIdOne);
+		
+		var _smIdTwo = row.smIdTwo;
+		$('select[name="smIdTwo"]').find('option').removeAttr("selected");
+		$('select[name="smIdTwo"]').find('option[value="'+_smIdTwo+'"]').attr("selected","selected");
+		$('select[name="smIdTwo"]').val(_smIdTwo);
+		/*
+		$('select[name="smIdTwo"]').find('option').each(function(){
+							if($(this).val()==_smIdTwo){
+								$(this).attr('selected',true);
+								return false;
+							}
+		});
+		*/
+		var _iSpan = row.iSpan;
+		$('select[name="iSpan"]').find('option').removeAttr("selected");
+		$('select[name="iSpan"]').find('option[value="'+_iSpan+'"]').attr("selected","selected");
+		$('select[name="iSpan"]').val(_iSpan);
+		/*
+		$('select[name="iSpan"]').find('option').each(function(){
+							if($(this).val()==_iSpan){
+								$(this).attr('selected',true);
+								return false;
+							}
+		});
+		*/
+	}
+	
+	function formatDate(date){
+		var _all = date.split(' ');
+		var _yy = _all[0].split('-');
+		return _yy[1]+'/'+_yy[2]+'/'+_yy[0]+' '+_all[1];
+	}
+	
+	function closeWin(){
+		$('#w').window('close');
+	}
+	function submitWin(){
+		$('#ff').form('submit',{
+			url:'data/run.php?c=InsEui&f=saveIns',
+		    onSubmit: function(){
+				$('#subBtn').linkbutton('disable');
+		    },
+		    success:function(data){
+				$.messager.alert('提示',data,'Info');
+				$('#subBtn').linkbutton('enable');
+				closeWin();
+				reloadData();
+		    }
+		});
+	}
+	function reloadData(){
+		$('#dg').datagrid('reload');
+	}
+	var _sendMsgId = '';
+	function onRowContextMenu(e, rowIndex, rowData){
+		//三个参数：e里面的内容很多，真心不明白，rowIndex就是当前点击时所在行的索引，rowData当前行的数据
+        e.preventDefault(); //阻止浏览器捕获右键事件
+        $(this).datagrid("clearSelections"); //取消所有选中项
+        $(this).datagrid("selectRow", rowIndex); //根据索引选中该行
+        //显示右键菜单
+        $('#menu').menu('show', {			
+            left: e.pageX,//在鼠标点击处显示菜单
+            top: e.pageY
+        });
+		_sendMsgId = rowData.id;
+	}
+	function sendMsg(msgtype){
+		$.ajax({
+			url:'data/run.php?c=InsEui&f=messageIns',
+			type:'post',
+			data:'id='+_sendMsgId+'&msgtype='+msgtype,
+			success:function(data){
+				if(data=='0'){
+					$.messager.alert('提示','发送失败','Info');
+				}else{
+					$.messager.alert('提示','发送成功','Info');
+				}
+			}
+		});	
+	}
+	
+	function clearIns(s){
+		$.ajax({
+			url:'data/run.php?c=InsEui&f=updateInsStatus',
+			type:'post',
+			data:'id='+_sendMsgId+'&_s='+s,
+			success:function(data){
+				if(data=='1'){
+					$.messager.alert('提示','取消成功','Info');
+				}else{
+					$.messager.alert('提示','取消失败','Info');
+				}
+				reloadData();
+			}
+		});	
+	}
+</script>

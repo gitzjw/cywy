@@ -1,0 +1,182 @@
+<script type="text/javascript" src="src.js"></script>
+
+<table id="dg" data-options="rownumbers:true,singleSelect:true,pagination:true,url:'data/run.php?c=CakeOrderEui&f=getCakeOrderList',method:'get',toolbar:'#tb',onRowContextMenu:onRowContextMenu">
+    <thead>
+        <tr>
+            <th data-options="field:'id',width:150">
+                订单ID
+            </th>
+            <th data-options="field:'uId',width:100">
+                用户ID
+            </th>
+            <th data-options="field:'cpName',width:100">
+                产品
+            </th>
+            <th data-options="field:'sendType',width:60" formatter="formatterSendType">
+                配送类型
+            </th>
+            <th data-options="field:'oAddress',width:170">
+                地址
+            </th>
+            <th data-options="field:'oName',width:60">
+                收件人
+            </th>
+			<th data-options="field:'oTel',width:80">
+                电话
+            </th>
+			<th data-options="field:'rTime',width:70">
+                收货日期
+            </th>
+			<th data-options="field:'petName',width:60">
+                宠物
+            </th>
+			<th data-options="field:'petSex',width:30" formatter="formatSex">
+                性别
+            </th>
+			<th data-options="field:'petBirthday',width:60">
+                年龄
+            </th>
+			<th data-options="field:'payMoney',width:60">
+                支付金额
+            </th>
+			<th data-options="field:'payCode',width:160">
+                交易流水号
+            </th>
+			<th data-options="field:'payTime',width:130">
+                支付时间
+            </th>
+			<th data-options="field:'createTime',width:130">
+                创建时间
+            </th>
+			<th data-options="field:'status',width:60" formatter="formatS">
+                状态
+            </th>
+			<th data-options="field:'oUser',width:60">
+                操作人
+            </th>
+			<th data-options="field:'oMsg',width:60">
+                操作描述
+            </th>
+        </tr>
+    </thead>
+</table>
+<div id="tb" style="padding:2px 5px;">
+		名字: <input class="easyui-textbox" id="inputName" style="width:110px">
+		电话: <input class="easyui-numberbox" id="inputTel" style="width:110px">
+		宠物: <input class="easyui-textbox" id="inputPetName" style="width:110px">
+		订单号: <input class="easyui-textbox" id="inputPetB"  style="width:110px;" >
+		<a href="#" class="easyui-linkbutton" iconCls="icon-search" id="sBtn">Search</a>
+</div>
+<div id="menu" class="easyui-menu" style="width: 50px; display: none;">
+    <!--放置一个隐藏的菜单Div-->
+    <div data-options="iconCls:'icon-tip'" onclick="updateStatus(3)">配送中</div>
+	<div data-options="iconCls:'icon-tip'" onclick="updateStatus(9)">完成</div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        var pager = $('#dg').datagrid().datagrid('getPager');
+		$('#sBtn').click(function(){
+			var _name = $('#inputName').val();
+			var _tel = $('#inputTel').val();
+			var _pet = $('#inputPetName').val();
+			var _bir = $('#inputPetB').val();
+			$('#dg').datagrid('load', {
+			    _name: _name,
+			    _tel: _tel,
+				_pet:_pet,
+				_bir:_bir
+			});
+		});
+    });
+	function formatS(val,row,index){
+		var _str = '';
+		switch (val){
+			case '1':
+			_str = '已创建';
+			break;
+			case '2':
+			_str = '<strong style="color:#33ff33">已支付</strong>';
+			break;
+			case '3':
+			_str = '<strong style="color:#66cccc">配送中</strong>';
+			break;
+			case '4':
+			_str = '<strong style="color:#DEDEDE">退款</strong>';
+			break;
+			case '5':
+			_str = '<strong style="color:#CFCFCF">退货</strong>';
+			break;
+			case '9':
+			_str = '<strong style="color:#98FB98">完成</strong>';
+			break;
+			default:
+			_str = '已创建';
+			break;
+		}
+		return _str;
+	}
+	
+	
+	function formatterSendType(val,row,index){
+		var _str = '';
+		switch (val){
+			case '1':
+			_str = '个人';
+			break;
+			case '2':
+			_str = '到店';
+			break;
+			default:
+			_str = '到店';
+			break;
+		}
+		return _str;
+	}
+	
+	function formatSex(val,row,index){
+		var _str = '';
+		switch (val){
+			case '1':
+			_str = '公';
+			break;
+			case '0':
+			_str = '母';
+			break;
+			default:
+			_str = '公';
+			break;
+		}
+		return _str;
+	}
+	
+	var _data = '';
+	function onRowContextMenu(e, rowIndex, rowData){
+		//三个参数：e里面的内容很多，真心不明白，rowIndex就是当前点击时所在行的索引，rowData当前行的数据
+        e.preventDefault(); //阻止浏览器捕获右键事件
+        $(this).datagrid("clearSelections"); //取消所有选中项
+        $(this).datagrid("selectRow", rowIndex); //根据索引选中该行
+        //显示右键菜单
+        $('#menu').menu('show', {			
+            left: e.pageX,//在鼠标点击处显示菜单
+            top: e.pageY
+        });
+		_data = rowData; 
+	}
+	
+	function updateStatus(s){
+		if(_data.status>='2'){
+			$.ajax({
+				url:'data/run.php?c=CakeOrderEui&f=updateStatus',
+				type:'post',
+				async:true,
+				data:'_id='+_data.id+'&_s='+s,
+				success:function(data){
+					$.messager.alert('提示',data);
+					$('#dg').datagrid('reload');
+				}
+			});
+		}else{
+			$.messager.alert('提示','不能进行此操作');
+		}
+	}
+</script>

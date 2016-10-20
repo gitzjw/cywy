@@ -1,0 +1,58 @@
+<script type="text/javascript" src="src.js"></script>
+
+<table id="dg" data-options="rownumbers:true,singleSelect:true,pagination:true,url:'data/run.php?c=ActivityEui&f=getActivityList&_t=20160122',method:'get',toolbar:'#tb'">
+    <thead>
+        <tr>
+            <th data-options="field:'id',width:100">
+                编号
+            </th>
+            <th data-options="field:'xl',width:260" formatter="f">
+                线路
+            </th>
+			<th data-options="field:'idcard',width:260">
+                身份证
+            </th>
+            <th data-options="field:'xm',width:80">
+                姓名
+            </th>
+            <th data-options="field:'tel',width:150">
+                电话
+            </th>
+            <th data-options="field:'shop',width:160">
+                宠物店
+            </th>
+            <th data-options="field:'mark',width:160">
+                备注
+            </th>
+        </tr>
+    </thead>
+</table>
+<div id="tb" style="padding:2px 5px;">
+		线路: <select  id="xl_select" class="easyui-combobox" style="width:300px;">
+			<option value="">请选择线路</option>
+			<option value="1">北京—石家庄（经停：高碑店、保定）</option>
+			  <option value="2">上海—南京（经停：苏州、无锡、常州）</option>
+			  <option value="3">深圳—韶关 （经停：东莞、广州、清远）</option>
+			</select>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-search" id="sBtn">Search</a>
+</div>
+<script type="text/javascript">
+    $(function(){
+        var pager = $('#dg').datagrid().datagrid('getPager'); // get the pager of datagrid       
+        $('#sBtn').click(function(){
+			var _xl = $('#xl_select').combobox('getValue');			
+			$('#dg').datagrid('load', {
+			    _xl: _xl
+			});
+		});
+    });
+	function f(val){
+		if(val=='1'){
+			return '北京—石家庄（经停：高碑店、保定）';
+		}else if(val=='2'){
+			return '<b style="color:green">上海—南京（经停：苏州、无锡、常州）</b>';
+		}else{
+			return '<b style="color:#ccc">深圳—韶关 （经停：东莞、广州、清远）</b>';
+		}
+	}
+</script>

@@ -1,0 +1,55 @@
+<script type="text/javascript" src="src.js"></script>
+
+<table id="dg" data-options="rownumbers:true,singleSelect:true,pagination:true,url:'data/run.php?c=ActivityEui&f=getActivityList&_t=20151202',method:'get'">
+    <thead>
+        <tr>
+            <th data-options="field:'id',width:100">
+                编号
+            </th>
+            <th data-options="field:'xm',width:200">
+                姓名
+            </th>
+            <th data-options="field:'tel',width:100">
+                电话号码
+            </th>
+            <th data-options="field:'shop',width:200">
+                店名
+            </th>
+            <th data-options="field:'exp',width:240">
+                经验
+            </th>
+            <th data-options="field:'lv',width:60">
+                等级
+            </th>
+			<th data-options="field:'content',width:200">
+                内容
+            </th>
+			<th data-options="field:'cdate',width:60">
+                日期
+            </th>
+        </tr>
+    </thead>
+</table>
+<script type="text/javascript">
+    $(function(){
+        var pager = $('#dg').datagrid().datagrid('getPager'); // get the pager of datagrid
+        pager.pagination({
+            buttons: [{
+                iconCls: 'icon-search',
+                handler: function(){
+                    alert('search');
+                }
+            }, {
+                iconCls: 'icon-add',
+                handler: function(){
+                    alert('add');
+                }
+            }, {
+                iconCls: 'icon-edit',
+                handler: function(){
+                    alert('edit');
+                }
+            }]
+        });
+    });
+</script>

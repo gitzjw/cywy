@@ -1,0 +1,80 @@
+<script type="text/javascript" src="src.js"></script>
+
+<table id="dg" data-options="rownumbers:true,singleSelect:true,pagination:true,url:'data/run.php?c=ShopSpeUserEui&f=getShopSpeUserList',method:'get',toolbar:'#tb'">
+    <thead>
+        <tr>
+            <th data-options="field:'id',width:60">
+                编号
+            </th>
+            <th data-options="field:'uId',width:100">
+                用户ID
+            </th>
+            <th data-options="field:'wType',width:60" formatter="formatLY">
+                类型
+            </th>
+            <th data-options="field:'openid',width:180">
+                OPENID
+            </th>
+            <th data-options="field:'sName',width:60">
+                名字
+            </th>
+			<th data-options="field:'city',width:60" formatter="getCityName">
+                地区
+            </th>
+            <th data-options="field:'sTel',width:60">
+                电话
+            </th>
+			<th data-options="field:'sEmail',width:160">
+                邮箱
+            </th>
+			<th data-options="field:'shopCode',width:160">
+              邀请码
+            </th>
+			<th data-options="field:'sStatus',width:60" formatter="formatS">
+                状态
+            </th>
+        </tr>
+    </thead>
+</table>
+<div id="tb" style="padding:2px 5px;">
+		用户ID: <input class="easyui-textbox" id="inputId" style="width:110px">
+		邮箱: <input class="easyui-textbox" id="inputIdcard" style="width:110px">
+		电话号: <input class="easyui-numberbox" id="inputTel" style="width:110px">
+		类型：<select name="wType" id="wType" class="easyui-combobox" style="width:110px"><option value="">选择类型</option><option value="1">BD专员</option><option value="2">采购专员</option><option value="3">配送专员</option><option value="4">财务专员</option></select>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-search" id="sBtn">Search</a>
+</div>
+<script type="text/javascript">
+    $(function(){
+        var pager = $('#dg').datagrid().datagrid('getPager'); 
+		$('#sBtn').click(function(){
+			var _id = $('#inputId').val();
+			var _idcard = $('#inputIdcard').val();
+			var _tel = $('#inputTel').val();
+			var _wtype = $('#wType').combobox("getValue");;
+			$('#dg').datagrid('load', {
+			    _idcard: _idcard,
+			    _tel: _tel,
+				_id:_id,
+				_wtype:_wtype
+			});
+		});
+    });
+	function formatLY(val,row,index){
+		if(val=='1'){
+			return '<strong style="color:#B4EEB4">BD专员</strong>';
+		}else if(val=='2'){
+			return '<strong style="color:#969696">采购专员</strong>';
+		}else if(val=='3'){
+			return '<strong style="color:#71C671">配送专员</strong>';
+		}else if(val=='4'){
+			return '<strong style="color:#ccC671">财务专员</strong>';
+		}
+	}
+	function formatS(val,row,index){
+		if(val=='1'){
+			return '<strong style="color:green">正常</strong>';
+		}else{
+			return '异常';
+		}
+	}
+</script>

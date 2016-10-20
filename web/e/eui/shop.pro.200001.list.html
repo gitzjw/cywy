@@ -1,0 +1,489 @@
+<script type="text/javascript" src="src.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../public/js/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../public/js/ueditor/ueditor.all.min.js"> </script>
+<script type="text/javascript" charset="utf-8" src="../../public/js/ueditor/lang/zh-cn/zh-cn.js"></script>
+
+<table id="dg" data-options="rownumbers:true,singleSelect:true,pageSize: 30,pagination:true,url:'data/run.php?c=ShopProEui&f=getShopProList&_tab=200001',method:'get',onDblClickRow:onDblClickRow,toolbar:'#tb',onRowContextMenu:onRowContextMenu">
+    <thead>
+        <tr>
+            <th data-options="field:'id',width:100">
+                编号
+            </th>
+			<th data-options="field:'sptm',width:200">
+                商品编码
+            </th>
+            <th data-options="field:'title',width:200">
+                名称
+            </th>
+			<th data-options="field:'wTypeName',width:100">
+                分类
+            </th>
+			<th data-options="field:'listImgPath',width:60" formatter="picUrl">
+                小图
+            </th>
+			<th data-options="field:'dImgPath',width:60" formatter="picUrl">
+                大图
+            </th>
+			<th data-options="field:'oNum',width:60">
+                库存
+            </th>
+			<th data-options="field:'sNum',width:60">
+                已销
+            </th>
+			<th data-options="field:'nNum',width:60">
+                剩余
+            </th>
+            <th data-options="field:'oPrice',width:60">
+                批发价
+            </th>
+            <th data-options="field:'isSingle',width:100" formatter="formatSingle">
+                独家
+            </th>
+            <th data-options="field:'nPrice',width:100">
+                卖价
+            </th>
+			<th data-options="field:'isTop',width:60">
+                置顶
+            </th>
+			<th data-options="field:'spSort',width:60">
+                排序
+            </th>
+			<th data-options="field:'aLif',width:60">
+                首字母
+            </th>
+			<th data-options="field:'isIndex',width:60">
+                首页
+            </th>
+			<th data-options="field:'spStatus',width:60" formatter="formatS">
+                状态
+            </th>
+        </tr>
+    </thead>
+</table>
+<div id="tb" style="padding:2px 5px;">
+		编号: <input class="easyui-textbox" id="inputIdNum" style="width:110px">
+		条形码: <input class="easyui-textbox" id="inputSptm" style="width:110px">
+		商品名称: <input class="easyui-textbox" id="inputName" style="width:350px">
+		商品状态：<select id="d189" class="easyui-combobox" style="width:120px;">
+					<option value="">请选择状态</option>
+					<option value="1">上架</option>
+					<option value="2">下架</option>
+				</select>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-search" id="sBtn">Search</a>
+		<!--<a href="#" class="easyui-linkbutton" iconCls="icon-search" id="addBtn">添加商品</a>-->
+</div>
+<div id="menu" class="easyui-menu" style="width: 50px; display: none;">
+    <!--放置一个隐藏的菜单Div-->
+    <div data-options="iconCls:'icon-tip'" onclick="updateStatus(1)">上架</div>
+	<div data-options="iconCls:'icon-tip'" onclick="updateStatus(2)">下架</div>
+	<div data-options="iconCls:'icon-tip'" onclick="updateTop(1)">置顶</div>
+	<div data-options="iconCls:'icon-tip'" onclick="updateTop(0)">取消置顶</div>
+	<div data-options="iconCls:'icon-tip'" onclick="setSpe()">设置特价</div>
+</div>
+
+<div id="w" class="easyui-window" title="编辑产品" data-options="modal:true,closed:true,iconCls:'icon-save'" style="padding:10px;">
+		<div class="easyui-panel" title="" style="width:600px;">
+			<div style="padding:10px 60px 20px 60px">
+			    <form id="ff" method="post" enctype="multipart/form-data">
+			    	<input type="hidden" name="id" id="inputId" value="">
+					<input type="hidden" name="dImgPath" id="dImgPath" value="">
+					<input type="hidden" name="listImgPath" id="listImgPath" value="">
+			    	<table cellpadding="1">
+			    		<tr>
+			    			<td>编号:</td>
+			    			<td id="idTd"></td>
+							<td></td>
+			    			<td></td>
+			    		</tr>
+			    		<tr>
+			    			<td>标题:</td>
+			    			<td><input class="easyui-textbox" name="title" id="title"></input></td>
+							<td>分类</td>
+							<td id="parentIdTd"></td>
+			    		</tr>
+						<tr>
+			    			<td style="display:none">库存:</td>
+			    			<td style="display:none"><input class="easyui-numberbox" name="oNum" id="oNum" value="999"></input></td>
+							<td style="display:">销量:</td>
+			    			<td style="display:"><input class="easyui-numberbox" name="sNum" id="sNum" value="0"></input></td>
+			    		</tr>
+						<tr>
+			    			<td style="display:none">剩余:</td>
+			    			<td style="display:none"><input class="easyui-numberbox" name="nNum" id="nNum" value="999"></input></td>
+							<td style="">采购价:</td>
+			    			<td style=""><input class="easyui-textbox" name="oPrice" id="oPrice"></input></td>
+			    		</tr>
+						<tr>			    			
+							<td>售价:</td>
+			    			<td><input class="easyui-textbox" name="nPrice" id="nPrice"></input></td>
+							<td style="display:none">优惠:</td>
+			    			<td style="display:none"><input class="easyui-numberbox" name="dPrice" id="dPrice"></input></td>
+			    			<td>独家:</td>
+			    			<td><select name="isSingle" id="isSingle" class="easyui-combobox" style="width:110px"><option value="0">非独家</option><option value="1">独家</option></select></td>
+			    		</tr>
+						<tr>			    			
+							<td>市场价:</td>
+			    			<td><input class="easyui-textbox" name="marketPrice" id="marketPrice"></input></td>
+							<td>特价:</td>
+			    			<td><select name="speMark" id="speMark" class="easyui-combobox" style="width:110px"><option value="0">非特价</option><option value="1">特价</option></select></td>
+			    		</tr>
+						<tr>
+			    			<td>小图:</td>
+			    			<td><input class="easyui-filebox" name="listimg" id="listimg"></input></td>
+							<td>大图:</td>
+			    			<td><input class="easyui-filebox" name="upload1" id="upload1"></input></td>
+			    		</tr>
+						<tr>
+			    			<td>置顶:</td>
+			    			<td><input class="easyui-numberbox" name="isTop" id="isTop"></input></td>
+							<td>首页:</td>
+			    			<td><input class="easyui-numberbox" name="isIndex" id="isIndex"></input></td>
+			    		</tr>
+						<tr>
+							<td>排序:</td>
+			    			<td><input class="easyui-numberbox" name="spSort" id="spSort"></input></td>
+			    			<td>状态:</td>
+			    			<td><select name="spStatus"><option value="1">上架</option><option value="2">下架</option></select></td>
+			    		</tr>
+						<tr>		
+							<td>规格:</td>	    			
+			    			<td><input class="easyui-textbox" name="sNorms" id="sNorms"></input></td>
+			    			<td>首字母:</td>
+			    			<td>
+			    				<select name="aLif">
+			    					<option value="A">A</option><option value="B">B</option><option value="C">C</option>
+			    					<option value="D">D</option><option value="E">E</option><option value="F">F</option>
+									<option value="G">G</option><option value="H">H</option><option value="I">I</option>
+									<option value="J">J</option><option value="K">K</option><option value="L">L</option>
+									<option value="M">M</option><option value="N">N</option><option value="O">O</option>
+									<option value="P">P</option><option value="Q">Q</option><option value="R">R</option>
+									<option value="S">S</option><option value="T">T</option><option value="U">U</option>
+									<option value="V">V</option><option value="W">W</option><option value="X">X</option>
+									<option value="Y">Y</option><option value="Z">Z</option>
+			    				</select>
+							</td>
+			    		</tr>
+						<tr>
+							<td>单位:</td>
+			    			<td><input class="easyui-textbox" name="sUnit" id="sUnit"></input></td>
+			    			<td>比例:</td>
+			    			<td><input class="easyui-textbox" name="sUnitNum" id="sUnitNum"></input></td>
+			    		</tr>
+						<tr>
+							<td>编码:</td>
+			    			<td><input class="easyui-textbox" name="sptm" id="sptm"></input></td>
+			    			<td>发货地:</td>
+			    			<td><input class="easyui-textbox" name="goodsNote" id="goodsNote"></input></td>
+			    		</tr>
+						<tr>		
+							<td>简介:</td>	    			
+			    			<td colspan="3"><textarea name="spDesc" id="spDesc"  style="width:300px;"></textarea></td>
+			    		</tr>
+						<tr>			    			
+			    			<td colspan="4"><textarea name="content" id="content"  style="width:500px;"></textarea></td>
+			    		</tr>
+			    	</table>
+			    </form>
+				<div style="text-align:center;padding:5px">
+			    	<a href="javascript:void(0)" class="easyui-linkbutton"  id="subBtn" onclick="submitWin()">提交</a>
+			    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="closeWin()">关闭</a>
+			    </div>
+		    </div>
+		</div>
+	</div>
+	<div id="w1" class="easyui-window" title="设置特价" data-options="modal:true,closed:true,iconCls:'icon-save'" style="padding:10px;">
+		<div class="easyui-panel" title="" style="width:600px;">
+			<div style="padding:10px 60px 20px 60px">
+			    <form id="ff1" method="post">
+			    	<input type="hidden" name="id1" id="inputId1" value="">
+		 			<table cellpadding="1">
+			    		<tr>
+			    			<td>特价分类：</td>
+			    			<td><select id="inputSelWType" name="speType" class="easyui-combotree" style="width:200px;"
+		 data-options="url:'data/run.php?c=ShopTypeEui&f=getShopTypeListCombobox&_pid=286'"></select></td>
+			    		</tr>
+						<tr>
+			    			<td>特价售价：</td>
+			    			<td><input class="easyui-textbox" name="nPrice1" id="nPrice1"></input></td>
+			    		</tr>
+					</table>
+			    </form>
+				<div style="text-align:center;padding:5px">
+			    	<a href="javascript:void(0)" class="easyui-linkbutton"  id="subBtn1" onclick="submitWin1()">提交</a>
+			    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="closeWin1()">关闭</a>
+			    </div>
+		    </div>
+		</div>
+	</div>
+<div id="preImg"></div>
+<script type="text/javascript">
+	//实例化编辑器
+    var ue = UE.getEditor('content',{toolbars: [
+		    [
+		        'undo', //撤销
+		        'redo', //重做
+		        'bold', //加粗
+		        'indent', //首行缩进
+		        'italic', //斜体
+		        'underline', //下划线
+		        'strikethrough', //删除线
+		        'subscript', //下标
+		        'fontborder', //字符边框
+		        'superscript', //上标
+		        'pasteplain', //纯文本粘贴模式
+		        'horizontal', //分隔线
+		        'time', //时间
+		        'date', //日期
+		        'mergecells', //合并多个单元格
+		        'cleardoc', //清空文档
+		        'insertparagraphbeforetable', //"表格前插入行"
+		        'fontfamily', //字体
+		        'fontsize', //字号
+		        'paragraph', //段落格式
+		        'simpleupload', //单图上传
+		        'insertimage',
+		        'edittable', //表格属性
+		        'edittd', //单元格属性
+		        'link', //超链接
+		        'justifyleft', //居左对齐
+		        'justifyright', //居右对齐
+		        'justifycenter', //居中对齐
+		        'justifyjustify', //两端对齐
+		        'forecolor', //字体颜色
+		        'backcolor', //背景色
+		        'touppercase', //字母大写
+		        'background', //背景
+		        'inserttable', //插入表格
+		        'autotypeset',//自动排版
+		    ]
+		]});
+		
+	$.ajax({
+			url:'data/run.php?c=ShopTypeEui&f=getCateSelectHtml',
+			type:'post',
+			data:'_s=2&_pid=0&_name=wType',
+			success:function(data){
+				$('#parentIdTd').html(data);
+			}
+		});
+	
+    $(function(){
+        var pager = $('#dg').datagrid().datagrid('getPager');
+		$('#sBtn').click(function(){
+			var _name = $('#inputName').val();
+			var _stst = $('#d189').combobox('getValue');
+			var _id = $('#inputIdNum').val();
+			var _txm = $('#inputSptm').val();
+			$('#dg').datagrid('load', {
+			    _name: _name,
+				_stst: _stst,
+				_id:_id,
+				_txm:_txm
+			});
+		});
+		$('#addBtn').click(function(){
+			$('#w').window('open');
+			$('#idTd').html('');
+			$('#ff').form('reset');
+			$('#ff').form('clear');
+			$('select').find('option:eq(0)').attr('selected',true);
+			ue.execCommand('cleardoc');
+			$('#isTop').textbox({required:true,value:0});
+			$('#isSingle').textbox({required:true,value:0});
+			$('#isIndex').textbox({required:true,value:0});		
+			$('#spSort').textbox({value:0});
+		});
+    });
+	
+	
+	function formatS(val,row,index){
+		if(val=='1'){
+			return '<b style="color:green;">已上架</b>';
+		}else{
+			return '已下架';
+		}
+	}
+
+	function formatSingle(val,row,index){
+		if(val == '1'){
+			return '独家';
+		}else{
+			return '非独家';
+		}
+	}
+	
+	var _data = '';
+	function onRowContextMenu(e, rowIndex, rowData){
+		//三个参数：e里面的内容很多，真心不明白，rowIndex就是当前点击时所在行的索引，rowData当前行的数据
+        e.preventDefault(); //阻止浏览器捕获右键事件
+        $(this).datagrid("clearSelections"); //取消所有选中项
+        $(this).datagrid("selectRow", rowIndex); //根据索引选中该行
+        //显示右键菜单
+        $('#menu').menu('show', {			
+            left: e.pageX,//在鼠标点击处显示菜单
+            top: e.pageY
+        });
+		_data = rowData; 
+	}
+	
+	function updateStatus(s){
+		$.ajax({
+			url:'data/run.php?c=ShopProEui&f=updateStatus&_tab=200001',
+			type:'post',
+			async:true,
+			data:'_id='+_data.id+'&_s='+s,
+			success:function(data){
+				$.messager.alert('提示',data);
+				$('#dg').datagrid('reload');
+			}
+		});
+	}
+	function updateTop(s){
+		$.ajax({
+			url:'data/run.php?c=ShopProEui&f=updateTop&_tab=200001',
+			type:'post',
+			async:true,
+			data:'_id='+_data.id+'&_top='+s,
+			success:function(data){
+				$.messager.alert('提示',data);
+				$('#dg').datagrid('reload');
+			}
+		});
+	}
+	function closeWin(){
+		$('#w').window('close');
+	}
+	function submitWin(){
+		$('#ff').form('submit',{
+			url:'data/run.php?c=ShopProEui&f=saveShopPro&_tab=200001',
+		    onSubmit: function(){
+				$('#subBtn').linkbutton('disable');
+		    },
+		    success:function(data){
+				$.messager.alert('提示',data,'Info');
+				$('#subBtn').linkbutton('enable');
+				closeWin();
+				reloadData();
+		    }
+		});
+	}
+	function reloadData(){
+		$('#dg').datagrid('reload');
+	}
+	function setSpe(){
+		$('#inputId1').val(_data.id);
+		$('#w1').window('open');
+	}
+	function closeWin1(){
+		$('#w1').window('close');
+	}
+	function submitWin1(){
+		$('#ff1').form('submit',{
+			url:'data/run.php?c=ShopProEui&f=setShopProSpe&_tab=200001',
+		    onSubmit: function(){
+				$('#subBtn1').linkbutton('disable');
+		    },
+		    success:function(data){
+				$.messager.alert('提示',data,'Info');
+				$('#subBtn1').linkbutton('enable');
+				closeWin1();
+				reloadData();
+		    }
+		});
+	}
+	
+	function onDblClickRow(field,row){
+		$('#w').window('open');
+		$('#idTd').html(row.id);
+		$('#inputId').val(row.id);
+		$('#dImgPath').val(row.dImgPath);
+		$('#listImgPath').val(row.listImgPath);
+		
+		$('#title').textbox({required:true,value:row.title});
+		$('#oNum').textbox({value:row.oNum});
+		$('#sNum').textbox({required:true,value:row.sNum});
+		$('#nNum').textbox({required:true,value:row.nNum});		
+		$('#oPrice').textbox({value:row.oPrice});
+		$('#dPrice').textbox({value:row.dPrice});
+		$('#nPrice').textbox({value:row.nPrice});
+		$('#isTop').textbox({required:true,value:row.isTop});
+		$('#isSingle').combobox("setValue", (!row.isSingle || row.isSingle==0)?0:1);
+		$('#isIndex').textbox({required:true,value:row.isIndex});		
+		$('#spSort').textbox({value:row.spSort});
+		$('#sNorms').textbox({value:row.sNorms});
+		$('#sUnit').textbox({value:row.sUnit});
+		$('#spDesc').val(row.spDesc);
+		$('#goodsNote').textbox({value: row.goodsNote});
+		$('#sptm').textbox({value: row.sptm});
+		$('#sUnitNum').textbox({value: row.sUnitNum});
+		$('#marketPrice').textbox({value: row.marketPrice});
+		$('#speMark').combobox("setValue", row.speMark);
+		
+		$('#listimg').filebox({value:''});
+		$('#upload1').filebox({value:''});
+		
+		ue.setContent(row.spContent);
+		
+		var _wtype = row.wType;
+		$('select[name="wType"]').find('option').removeAttr("selected");
+		$('select[name="wType"]').find('option[value="'+_wtype+'"]').attr("selected","selected");
+		$('select[name="wType"]').val(_wtype);
+		
+		
+		var _sts = row.spStatus;
+		$('select[name="spStatus"]').find('option').removeAttr("selected");
+		$('select[name="spStatus"]').find('option[value="'+_sts+'"]').attr("selected","selected");
+		$('select[name="spStatus"]').val(_sts);
+		
+		var _istop = row.isTop;
+		$('select[name="isTop"]').find('option').removeAttr("selected");
+		$('select[name="isTop"]').find('option[value="'+_istop+'"]').attr("selected","selected");
+		$('select[name="isTop"]').val(_istop);
+		
+		var _alif = row.aLif;
+		$('select[name="aLif"]').find('option').removeAttr("selected");
+		$('select[name="aLif"]').find('option[value="'+_alif+'"]').attr("selected","selected");
+		$('select[name="aLif"]').val(_alif);
+	}
+	
+	function picUrl(val){
+		var _v = val.split('|');
+		var _html = '';
+		for(i=0;i<_v.length;i++){
+			var _sss = '#';
+			var _tar = '';
+			if(_v[i]!=''){
+				_sss = _v[i];
+				_tar = '_blank';
+			}
+			
+			_html += '<a href="'+_sss+'" target="'+_tar+'" onmouseover="preImg($(this),event)" onmouseleave="preImgExt($(this))">点击查看</a> | ';
+		}
+		return _html;
+	}
+		
+	function writeHtml(){
+		$.ajax({
+			url:'data/run.php?c=ShopProEui&f=writeHtml&_tab=200001',
+			type:'post',
+			async:true,
+			data:'_id='+_data.id+'',
+			success:function(data){
+				$.messager.alert('提示',data);
+				$('#dg').datagrid('reload');
+			}
+		});
+	}
+
+	
+	var xOffset = 10; 
+	var yOffset = 30; 
+	function preImg(obj,e){
+		var _href=obj.attr('href');
+		$('#preImg').html('<img src="'+_href+'" />');
+		$('#preImg').css("top", (e.pageY - xOffset) + "px").css("left", (e.pageX + yOffset) + "px").css("position","fixed").fadeIn("fast"); 
+	}
+	function preImgExt(obj){
+		$('#preImg').html('');
+	}
+</script>

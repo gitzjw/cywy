@@ -1,0 +1,197 @@
+<script type="text/javascript" src="src.js"></script>
+<table id="tg" data-options="rownumbers:true,singleSelect:true,pagination:true,
+url:'data/run.php?c=SignWinProEui&f=getSignWinProList',method:'get',toolbar:'#tb',footerbar:'#w',
+onDblClickRow:onDblClickRow"
+>
+    <thead>
+        <tr>
+            <th data-options="field:'id',width:100">
+                编号
+            </th>
+            <th data-options="field:'title',width:200">
+                标题
+            </th>
+            <th data-options="field:'subTitle',width:150">
+               副标题
+            </th>
+           <th data-options="field:'imgPath',width:60" formatter="picF">
+                图片
+            </th>
+            <th data-options="field:'wTypeName',width:60">
+               物品分类
+            </th>
+			<th data-options="field:'scName',width:120">
+               奖励类别
+            </th>
+			<th data-options="field:'content',width:60">
+               内容
+            </th>
+        </tr>
+    </thead>
+</table>
+<div id="tb" style="padding:2px 5px;">
+		<a href="#" class="easyui-linkbutton" iconCls="icon-add" id="addBtn">添加奖品</a>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-reload" id="reloadBtn" onclick="reloadData()">刷新</a>
+</div>
+<div id="w" class="easyui-window" title="编辑奖品" data-options="modal:true,closed:true,iconCls:'icon-save'" style="padding:10px;">
+		<div class="easyui-panel" title="" style="width:500px">
+			<div style="padding:10px 60px 20px 60px">
+			    <form id="ff" method="post" enctype="multipart/form-data">
+			    	<input type="hidden" name="id" id="inputId" value="">
+					<input type="hidden" name="imgPath" id="inputImgPath" value="">
+			    	<table cellpadding="5">
+			    		<tr>
+			    			<td>编号:</td>
+			    			<td id="idTd"></td>
+			    		</tr>
+			    		<tr>
+			    			<td>标题:</td>
+			    			<td><input class="easyui-textbox" name="title" id="title"></input></td>
+			    		</tr>
+			    		<tr>
+			    			<td>副标题:</td>
+			    			<td><input class="easyui-textbox" name="subTitle" id="subTitle"></input></td>
+			    		</tr>
+						<tr>
+			    			<td>奖励推送:</td>
+			    			<td><input class="easyui-textbox" name="winMsg" id="winMsg"></input></td>
+			    		</tr>
+						<tr>
+			    			<td>图片:</td>
+			    			<td><input class="easyui-filebox" name="upload" id="upload"></input></td>
+			    		</tr>
+						<tr>
+			    			<td>内容:</td>
+			    			<td><input class="easyui-textbox" name="content" id="content" style="width:250px;height:130px;" data-options="multiline:true"></input></td>
+			    		</tr>
+						<tr>
+			    			<td>月份:</td>
+			    			<td><input class="easyui-datebox" name="cDate" id="cDate"></input></td>
+			    		</tr>
+						<tr>
+			    			<td>物品分类:</td>
+			    			<td id="wTypeTd"></td>
+			    		</tr>
+						<tr>
+			    			<td>奖励归属:</td>
+			    			<td id="winTd"></td>
+			    		</tr>
+						<tr>
+			    			<td>其它:</td>
+			    			<td><input class="easyui-textbox" name="oMark" id="oMark"></input></td>
+			    		</tr>
+			    	</table>
+			    </form>
+				<div style="text-align:center;padding:5px">
+			    	<a href="javascript:void(0)" class="easyui-linkbutton"  id="subBtn" onclick="submitWin()">提交</a>
+			    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="closeWin()">关闭</a>
+			    </div>
+		    </div>
+		</div>
+	</div>
+<script type="text/javascript">
+    $(function(){
+        var pager = $('#tg').datagrid().datagrid('getPager'); // get the pager of datagrid       
+        $('#addBtn').click(function(){
+			$('#w').window('open');
+			$('#idTd').html('');
+			$('#ff').form('reset');
+			$('#ff').form('clear');
+			$('select').find('option:eq(0)').attr('selected',true);
+		});
+    });
+	function formatS(val,row,index){
+		if(val=='1'){
+			return '普通';
+		}else{
+			return '默认';
+		}
+	}
+	function defaultForm(){
+		$.ajax({
+				url:'data/run.php?c=WebTypeEui&f=getChildSelectHtml',
+				type:'post',
+				data:'_name=wType&_fid=7',
+				success:function(data){
+					$('#wTypeTd').html(data);
+				}
+			});		
+			$.ajax({
+					url:'data/run.php?c=SignDayConfigEui&f=getSignDayConfigSelect',
+					type:'post',
+					data:'_name=scId',
+					success:function(data){
+						$('#winTd').html(data);					
+					}
+				});
+	}
+	defaultForm();
+	function onDblClickRow(field,row){
+		$('#w').window('open');
+		$('#ff').form('reset');
+		$('#ff').form('clear');
+		
+		$('#idTd').html(row.id);
+		$('#inputId').val(row.id);
+		$('#inputImgPath').val(row.imgPath);
+		
+		$('#title').textbox({required:true,value:row.title});
+		$('#subTitle').textbox({required:true,value:row.subTitle});
+		$('#winMsg').textbox({required:true,value:row.winMsg});
+		$('#content').textbox({required:true,value:row.content,multiline:true});
+		
+		$('#cDate').datebox({value:formatDate(row.cDate)});
+		
+		var _sts = row.status;
+		$('select[name="status"]').find('option').each(function(){
+			if($(this).val()==_sts){
+				$(this).attr('selected',true);
+				return false;
+			}
+		});
+		var _wtype = row.wType;
+		$('select[name="wType"]').find('option').each(function(){
+			if($(this).val()==_wtype){
+				$(this).attr('selected',true);
+				return false;
+			}
+		});
+		var _scId = row.scId;
+		$('select[name="scId"]').find('option').each(function(){
+			if($(this).val()==_scId){
+				$(this).attr('selected',true);
+				return false;
+			}
+		});
+	}
+	function closeWin(){
+		$('#w').window('close');
+	}
+	function submitWin(){
+		$('#ff').form('submit',{
+			url:'data/run.php?c=SignWinProEui&f=saveSignWinPro',
+		    onSubmit: function(){
+				$('#subBtn').linkbutton('disable');
+		    },
+		    success:function(data){
+				$.messager.alert('提示',data,'Info');
+				$('#subBtn').linkbutton('enable');
+				closeWin();
+				reloadData();
+		    }
+		});
+	}
+	function reloadData(){
+		$('#tg').datagrid('reload');
+	}
+	function formatDate(date){
+		if(date==''){
+			return '';
+		}
+		var _yy = date.split('-');
+		return _yy[1]+'/01/'+_yy[0];
+	}
+	function picF(val){
+		return '<a target="_blank" href="'+val+'">点击查看</a>';
+	}
+</script>

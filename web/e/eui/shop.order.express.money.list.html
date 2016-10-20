@@ -1,0 +1,130 @@
+<script type="text/javascript" src="src.js"></script>
+
+<table id="dg" data-options="rownumbers:true,singleSelect:true,pagination:true,url:'data/run.php?c=ShopOrderExpressMoneyEui&f=getShopOrderExpressMoneyList',method:'get',toolbar:'#tb',onDblClickRow:onDblClickRow">
+    <thead>
+        <tr>
+            <th data-options="field:'id',width:100">
+                编号
+            </th>
+			<th data-options="field:'city',width:100" formatter="getCityName">
+                地区
+            </th>
+            <th data-options="field:'money',width:150">
+                要求金额
+            </th>
+            <th data-options="field:'exp_money',width:150">
+                配送费
+            </th>
+            <th data-options="field:'exp_status',width:100" formatter="formatS">
+                状态
+            </th>
+        </tr>
+    </thead>
+</table>
+<div id="tb" style="padding:2px 5px;">		
+		<a href="#" class="easyui-linkbutton" iconCls="icon-add" id="addBtn">添加城市配送费</a>
+</div>
+<div id="w" class="easyui-window" title="编辑供应商" data-options="modal:true,closed:true,iconCls:'icon-save'" style="padding:10px;">
+			<div class="easyui-panel" title="" style="width:500px">
+				<div style="padding:10px 60px 20px 60px">
+				    <form id="ff" method="post">
+				    	<input type="hidden" name="id" id="inputId" value="">
+				    	<table cellpadding="2">
+				    		<tr>
+				    			<td>编号:</td>
+				    			<td id="idTd"></td>
+				    		</tr>
+							<tr>
+				    			<td>城市:</td>
+				    			<td>
+				    				<input id="cityCode" class="easyui-combobox" 
+									name="city"
+									data-options="
+											url:'data/run.php?c=ShopTypeEui&f=getCityCode',
+											method:'get',
+											valueField:'id',
+											textField:'text',
+											panelHeight:'auto'
+									"></input>
+				    			</td>
+				    		</tr>
+							<tr>
+				    			<td>要求金额:</td>
+				    			<td><input class="easyui-textbox" type="text" name="money" id="money"></input></td>
+				    		</tr>
+							<tr>
+				    			<td>配送费:</td>
+				    			<td><input class="easyui-textbox" type="text" name="exp_money" id="exp_money"></input></td>
+				    		</tr>
+				    		<tr>
+				    			<td>状态:</td>
+				    			<td><select class="easyui-combobox" id="exp_status" name="exp_status">
+				    				<option value="0">未启用</option>
+									<option value="1">正常</option>
+				    			</select></td>
+				    		</tr>
+				    	</table>
+				    </form>
+					<div style="text-align:center;padding:5px">
+				    	<a href="javascript:void(0)" class="easyui-linkbutton" id="subBtn"  onclick="submitWin()">提交</a>
+				    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="closeWin()">关闭</a>
+				    </div>
+			    </div>
+			</div>
+		</div>
+<script type="text/javascript">
+    $(function(){
+        var pager = $('#dg').datagrid().datagrid('getPager'); // get the pager of datagrid
+		$('#sBtn').click(function(){
+			$('#dg').datagrid('load', {
+			});
+		});
+		$('#addBtn').click(function(){
+			$('#w').window('open');
+			$('#idTd').html('');
+			$('#ff').form('reset');
+			$('#ff').form('clear');
+		});
+    });
+	
+	function formatS(val,row,index){
+		if(val=='1'){
+			return '正常';
+		}else{
+			return '未启用';
+		}
+	}
+		
+	function onDblClickRow(field,row){
+		$('#w').window('open');
+		$('#idTd').html(row.id);
+		$('#inputId').val(row.id);
+		
+		$('#money').textbox({value:row.money});
+		$('#exp_money').textbox({value:row.exp_money});
+		
+		$('#cityCode').combobox('setValue', row.city);
+		$('#exp_status').combobox('setValue', row.exp_status);
+	}
+	
+	function closeWin(){
+		$('#w').window('close');
+	}
+	function submitWin(){
+		$('#ff').form('submit',{
+			url:'data/run.php?c=ShopOrderExpressMoneyEui&f=saveShopOrderExpressMoney',
+		    onSubmit: function(){
+				$('#subBtn').linkbutton('disable');
+		    },
+		    success:function(data){
+				$.messager.alert('提示',data,'Info');
+				$('#subBtn').linkbutton('enable');
+				closeWin();
+				reloadData();
+		    }
+		});
+	}
+	function reloadData(){
+		$('#dg').datagrid('reload');
+	}
+</script>

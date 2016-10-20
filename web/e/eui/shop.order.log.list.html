@@ -1,0 +1,17 @@
+<script type="text/javascript" src="src.js"></script>
+
+
+<div id="aa">
+	
+</div> 
+
+<script language="javascript"> 
+	$.ajax({
+			url:'data/run.php?c=ShopOrderExpressEui&f=getShopOrderLogTxt',
+			type:'post',
+			data:'_s=2&_pid=0&_name=wType',
+			success:function(data){
+				$('#aa').html(data);
+			}
+		});
+</script> 

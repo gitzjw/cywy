@@ -1,0 +1,161 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>萌工社 - 训犬基础技能培训</title>
+        <meta name="author" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        <link rel="stylesheet" type="text/css" href="css/css1.css" />
+        <script src="/public/js/jquery-1.8.3.min.js"></script>        
+        </script>
+    </head>
+    <body>
+        <section class=" zyz join">
+            <form action="#" >
+                <input type="hidden" name="run" value="saveActivityPay">
+				<input type="hidden" name="action" value="Activity">
+				<input type="hidden" name="_t" value="20151216">
+                <table width="100%" class="tbg" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <th colspan="2">
+                            <img src="http://img.momoday.net:4869/e599cdef71f8ee9cc558f73c3dcacdff" width="100%">
+                        </th>
+                    </tr>
+                    <tr>
+                        <tr>
+                            <td width="80">
+                                姓名
+                            </td>
+                            <td>
+                                <input type="text" name="xm" placeholder="输入您的姓名">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                电话
+                            </td>
+                            <td>
+                                <input type="number" placeholder="输入您的电话" name="tel">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                店名
+                            </td>
+                            <td>
+                                <input type="text" placeholder="填写目前工作所在的宠物店" name="shop">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                工作年限
+                            </td>
+                            <td>
+                                <input type="text" placeholder="填写从业宠物美容行业年数" name="exp">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                狗狗品种
+                            </td>
+                            <td>
+                                <input type="text" name="pz" placeholder="填写参加培训时，您携带的狗狗品种">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                学习需求
+                            </td>
+                            <td>
+                                <input type="text" name="content" placeholder="想学习哪些训犬技能">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <p style="margin-top:20px;">
+                                    <span style="margin-bottom:10px;font-size:16px;"><strong style="color:#f1be00; float:left;margin-right:5px;font-weight:normal">|</strong> 报名须知</span>
+                                    <span>1、为保证参与质量，本场培训将采取收费制，门票为50元/人（含萌工社定制款卫衣1件、训犬大礼包1套）；</span>
+                                    <span>2、本场培训共20个名额，每个名额仅限1人参加，拒绝空降；</span>
+                                    <span>3、为了保证学习效果，请自带狗狗，训犬师将现场指导实训。</span>
+                                </p>
+                            </td>
+                        </tr>
+                        </table>
+                    </section>
+                    </form>
+                    <div class="Buy_btn4 submit_order clear">
+                        <a href="javascript:void(0);" class="abcdefg" id="btn_s">立即报名</a>
+                    </div>
+					<script>
+						var ComClass = {
+						    
+						    post: function(params, callback){
+						        $.post("/c/run.php", params, function(data, textStatus){
+						            callback(data);
+						        });
+						    },
+						    
+						    href: function(tpl){
+						        window.location.href = this.webSite + tpl;
+						    }
+						    
+						}
+						var _oid='';
+						var _s_u_b=0;
+						function getFormValue() {
+							var _valStr = '';
+							$('form input').each(function() {
+								_valStr += $(this).attr('name')+'='+$(this).val();
+								_valStr += '& ';
+							});							
+							return _valStr;
+						}
+						$('#btn_s').click(
+								function() {
+									var _val = getFormValue();
+									_val += '&_oid=' + _oid;
+									if (_s_u_b == 0) {
+										++_s_u_b;
+										ComClass.post(_val, callbackData);
+									}
+								});
+						function callbackData(data) {
+							var _d = eval('(' + data + ')');
+							if (_d.code == '1') {
+								_e = _d.msg;
+								_oid = _e.oid;
+								onBridgeReady();
+							} else {
+								_s_u_b = 0;
+								alert(_d.msg);
+							}
+						}
+						
+						function onBridgeReady() {
+							WeixinJSBridge.invoke('getBrandWCPayRequest', {
+								"appId" : _e.appid, // 公众号名称，由商户传入
+								"timeStamp" : _e.timestamp+"", // 时间戳，自1970年以来的秒数
+								"nonceStr" : _e.newRndstr, // 随机串
+								"package" : "prepay_id=" + _e.prepay_id,
+								"signType" : "MD5", // 微信签名方式:
+								"paySign" : _e.newSign
+							// 微信签名
+							}, function(res) {
+								// 使用以下方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回 ok，但并不保证它绝对可靠。
+								if (res.err_msg == "get_brand_wcpay_request:ok") {
+									alert('支付成功');
+									WeixinJSBridge.invoke('closeWindow', {}, function(res) {
+									});
+								} else {
+									_s_u_b = 0;
+									alert('支付失败，请重新进行操作');
+									// WeixinJSBridge.invoke('closeWindow', {}, function(res){});
+								}
+							});
+						}						
+					</script>
+                </body>
+                </html>

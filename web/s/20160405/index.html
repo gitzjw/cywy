@@ -1,0 +1,197 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>宠物美容师应聘信息登记</title>
+        <meta name="author" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        <link rel="stylesheet" type="text/css" href="css/css1.css" />
+        <script src="/public/js/jquery-1.8.3.min.js">
+        </script>
+    </head>
+    <body>
+        <section class=" zyz join">
+            <img src="images/banner.jpg" width="100%">
+            <form action="/c/run.php" method="post">
+                <input type="hidden" name="run" value="saveActivityTmp">
+				<input type="hidden" name="action" value="Activity">
+				<input type="hidden" name="_t" value="20160405">
+                <table width="100%" class="tbg" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td>
+                            城市
+                        </td>
+                        <td>
+                            <select class="zhuce_6" name="city" onchange="changeShop(this.value)">
+                                <option value="" disabled selected style='display:none;'>选择城市</option>
+                                <option value="北京">北京</option>
+                                <option value="上海">上海</option>
+                                <option value="深圳">深圳</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            店名
+                        </td>
+                        <td>
+                            <select class="zhuce_6" name="shop" id="shopshop">
+                                <option value="" disabled selected style='display:none;'>选择宠物店</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            姓名
+                        </td>
+                        <td>
+                            <input type="text" name="xm" placeholder="请输入姓名">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            性别
+                        </td>
+                        <td>
+                            <select class="zhuce_6" name="xb">
+                                <option value="" disabled selected style='display:none;'>选择性别</option>
+                                <option value="男">男</option>
+                                <option value="女">女</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="80">
+                            电话
+                        </td>
+                        <td>
+                            <input name="tel" type="text" placeholder="请输入手机号">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="80">
+                            工作年限
+                        </td>
+                        <td>
+                            <input name="exp" type="text" placeholder="请输入工作年限">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            级别
+                        </td>
+                        <td>
+                            <select class="zhuce_6" name="lv">
+                                <option value="" disabled selected style='display:none;'>选择级别</option>
+                                <option value="A级">A级</option>
+                                <option value="B级">B级</option>
+                                <option value="C级">C级</option>
+                                <option value="无">无</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            目前状况
+                        </td>
+                        <td>
+                            <select class="zhuce_6" name="zk">
+                                <option value="" disabled selected style='display:none;'>选择自己的状况</option>
+                                <option value="目前在职，考虑换个新环境">目前在职，考虑换个新环境</option>
+                                <option value="目前已离职状态，可立即上岗">目前已离职状态，可立即上岗</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="80">
+                            期望薪资
+                        </td>
+                        <td>
+                            <input name="money" type="text" placeholder="请输入期望薪资">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="80">
+                            擅长造型
+                        </td>
+                        <td>
+                            <input name="zx" type="text" placeholder="请输入擅长造型">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            猫咪美容
+                        </td>
+                        <td class="yes">
+                            <p>
+                                <input name="mmmr" type="radio" value="能"> 能
+                            </p>
+                            <p>
+                                <input name="mmmr" type="radio" value="不能"> 不能
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            住宿
+                        </td>
+                        <td class="yes">
+                            <p>
+                                <input name="iszs" type="radio" value="需要"> 需要
+                            </p>
+                            <p>
+                                <input type="radio" name="iszs" value="不需要"> 不需要
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            备注
+                        </td>
+                        <td>
+                            <input type="text" name="remark" placeholder="随便写点什么，便于我们更加了解你">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <p style="margin-top:20px;">
+                                <span style="margin-bottom:10px;font-size:16px;"><strong style="color:#f1be00; float:left;margin-right:5px;font-weight:normal">|</strong> 萌工社合作店招聘</span>
+                                <span>1、萌工社优质合作商家，提供真实有效的高薪岗位！</span>
+                                <span>2、成功入职即可获得萌工社免费培训机会，为你充电助力！</span>
+                                <span>3、入职即日起查获得萌工社三个月#从业者意外医疗险#，猫爪狗咬100%免费报销，给你全面保障！</span>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+                <form>
+                </section>
+                <div class="Buy_btn4 submit_order clear">
+                    <a href="javascript:$('form').submit();" class="abcdefg" id="btn_s">立即应聘</a>
+                </div>
+				<script>
+					var changeShop = function(val){
+						$('#shopshop').html('<option value="" disabled selected style="display:none;">选择宠物店</option>');								
+						switch (val){
+							case '北京':
+							$('#shopshop').html('<option value="" disabled selected style=\'display:none;\'>选择宠物店</option><option value="窝窝宠物" >窝窝宠物</option>'+
+                                '<option value="邻家宠屋" >邻家宠屋</option>'+
+                                '<option value="泰迪帮宠物美容工作室" >泰迪帮宠物美容工作室</option>'+
+                                '<option value="玫瑰伴宠物" >玫瑰伴宠物 </option>'+
+                                '<option value="贝维斯宠物店" >贝维斯宠物店</option>'+
+                                '<option value="酷迪宠物高梁桥店" >酷迪宠物高梁桥店</option>');
+							break;
+							case '上海':
+							$('#shopshop').html('<option value="" disabled selected style=\'display:none;\'>选择宠物店</option><option value="玫瑰小姐宠物" >玫瑰小姐宠物 </option>'+
+                                '<option value="亦居宠物金谊广场店" >亦居宠物金谊广场店 </option>');
+							break;
+							case '深圳':
+							$('#shopshop').html('<option value="" disabled selected style=\'display:none;\'>选择宠物店</option><option value="爱玩乐宠物店" >爱玩乐宠物店</option>');''
+							break;
+						}
+					}
+				</script>
+            </body>
+            </html>

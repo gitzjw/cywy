@@ -1,0 +1,40 @@
+<script type="text/javascript" src="src.js"></script>
+<table id="dg" data-options="rownumbers:true,singleSelect:true,pagination:true,url:'data/run.php?c=SignMainEui&f=getSignMainList',method:'get',toolbar:'#tb'">
+    <thead>
+        <tr>
+            <th data-options="field:'id',width:100">
+                编号
+            </th>
+            <th data-options="field:'uId',width:200">
+                用户
+            </th>
+            <th data-options="field:'mTotalNum',width:100">
+                当月累计总数
+            </th>
+            <th data-options="field:'mContNum',width:240">
+                当月连续数
+            </th>
+            <th data-options="field:'sContNum',width:60">
+                总连续数
+            </th>
+			<th data-options="field:'sTotalNum',width:60">
+                总累计数
+            </th>
+        </tr>
+    </thead>
+</table>
+<div id="tb" style="padding:2px 5px;">
+		用户ID: <input class="easyui-textbox" id="inputUid" style="width:110px">
+		<a href="#" class="easyui-linkbutton" iconCls="icon-search" id="sBtn">Search</a>
+</div>
+<script type="text/javascript">
+    $(function(){
+        var pager = $('#dg').datagrid().datagrid('getPager');
+		$('#sBtn').click(function(){
+			var _uid = $('#inputUid').val();
+			$('#dg').datagrid('load', {
+			    _uid: _uid
+			});
+		});
+    });
+</script>

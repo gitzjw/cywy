@@ -1,0 +1,183 @@
+@charset "utf-8";
+/* CSS Document */
+* {
+	margin:0;
+	padding:0;
+}
+input, select, textarea {
+	margin:0;
+	padding:0
+}
+body {
+	-webkit-text-size-adjust:none;
+	background:#fff;
+	min-width:320px;
+	/* [disabled]margin:0;
+*/
+	padding:0;
+	font-family:"microsoft yahei", Verdana, Arial, Helvetica, sans-serif;
+	font-size:14px;
+	color:#000;
+}
+.overflow {
+	overflow:hidden;
+	zoom:1;
+}
+ul, li {
+	list-style:none;
+}
+a {
+	text-decoration:none;
+	color:#666
+}
+img, img a {
+	border:0;
+	vertical-align:middle;
+}
+.left {
+	float:left
+}
+.right {
+	float:right
+}
+.clear {
+	clear:both;
+}
+.color{color:#00cfd5}
+.color1{color:#faa807}
+.color2{color:#b3d705}
+.color3{color:#da372a}
+.color4{color:#0c85ec}
+.color5{color:#9e33e2}
+.color6{color:#666}
+.margin10{margin-top:20px;}
+.margin40{margin-top:40px;}
+.margin20{margin-bottom:15px;}
+.dingwei{ position:fixed;bottom:0;left:0;}
+.dingwe a { display:block}
+.margin50{margin-top:50px;}
+::-webkit-input-placeholder { /* WebKit browsers */
+    color:    #ccc;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+   color:    #ccc;
+   opacity:  1;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+   color:    #ccc;
+   opacity:  1;
+}
+:-ms-input-placeholder { /* Internet Explorer 10+ */
+   color:    #ccc;
+}
+
+
+
+
+.color9{color:#999}
+.color8{color:#000}
+
+
+.background{background:#00cfd5}
+.background1{background:#faa807}
+.background2{background:#b3d705}
+input:-moz-placeholder { color: #999; }
+::-webkit-input-placeholder { color:#999; }
+header{position:absolute;top:10px;left:10px; z-index:99;  }
+header p{font-weight:normal;font-size:14px;color:#999;background:#666; overflow:hidden;zoom:1;-webkit-border-radius: 5px;-moz-border-radius: 5px;border-radius: 5px;padding:5px  8px;	filter:alpha(opacity=60);
+	-moz-opacity: 0.6;
+	opacity: 0.6;}
+header p img{ float:left;margin-right:5px;margin-top:1px;}
+header p a{ color:#fff; float:left;font-size:14px;}
+
+.list_cslb{position:fixed;top:0;left:0; z-index:99; width:94%;padding:0 3%;height:40px;background:#fff;line-height:40px; overflow:hidden;zoom:1;border-bottom:#eee solid 1px;;-webkit-box-shadow:0 0 10px rgba(204, 204, 204, .5);  text-align:center;font-size:16px;font-weight:bold;font-family:"微软雅黑"; }
+.list_cslb p{ position:absolute;left:3%;top:1px;font-weight:normal;font-size:14px;color:#999;text-align:left}
+.list_cslb .dingwei1{ position:absolute;left:3%;top:-2px;}
+
+
+
+.margin{margin:3%;}
+
+
+
+
+
+
+
+
+
+
+.biaoti{font-size:16px;font-weight:normal;margin:3% 0 0 3%;height:25px;line-height:25px; overflow:hidden;zoom:1;}
+.biaoti span{float:left;margin-right:5px;font-weight:bold}
+.biaoti strong{ font-weight:normal; float:left;margin-top:1px;}
+.Buy_btn4 {
+	float:right;
+	padding:7px 5% 0 0;
+}
+.Buy_btn4 a {
+	display: inline-block;
+	text-align:center;
+	height:45px;
+	line-height:45px;
+	background: -moz-linear-gradient(top, #f84335, #da372a);
+	background:-webkit-gradient(linear, 0 0, 0 100%, from(#f84335), to(#da372a));
+	
+	color:#FFF;
+	font-size:1.2em;
+	
+	border:1px solid #da372a;
+}
+.Buy_btn5 {
+	float:right;
+	padding:7px 5% 0 0;
+}
+.Buy_btn5 a {
+	display: inline-block;
+	text-align:center;
+	height:45px;
+	line-height:45px;
+	background: -moz-linear-gradient(top, #eee, #eee);
+	background:-webkit-gradient(linear, 0 0, 0 100%, from(#eee), to(#eee));
+	
+	color:#999;
+	font-size:1.2em;
+	
+	border:1px solid #eee;
+}
+
+
+
+.Buy_btn3{ float:right; padding:7px 5% 0 0;}
+.Buy_btn3 a {
+	display: inline-block;
+	text-align:center;
+	height:45px;
+	line-height:45px;
+	background: -moz-linear-gradient(top, #bbb, #bbb);
+	background:-webkit-gradient(linear, 0 0, 0 100%, from(#bbb), to(#bbb));
+	
+	color:#FFF;
+	font-size:1.2em;
+	
+	border:1px solid #bbb;
+}
+
+
+.submit_order { padding:3%; width:94%;}
+.submit_order a {
+	display:block
+}
+
+.lxdh input{ width:99%;height:30px;line-height:30px;padding-left:1%;border:none;font-size:14px;}
+.lxdh p{font-size:14px;background:#f1f1f1; width:99%;line-height:30px;padding-left:1%;}
+.lxdh textarea{ width:98%;height:60px;border:#ccc solid 1px;padding:0 1%;line-height:20px;font-size:16px;}
+.dz{width:65%}
+.margin_20{margin-bottom:10px;}
+.border_1{border:#ccc solid 1px;padding-left:1%;}
+.border_2{border:#ccc solid 1px; width:40%; float:left;margin-bottom:20px;padding-left:1%;}
+.center1{margin:5% 0; text-align:center;font-size:14px;color:#666}
+.zhongjian{height:30px;line-height:30px; float:left; width:15%; text-align:center}
+.dh_ts{background:#f1f1f1;padding: 15px 10px;margin-bottom:20px;}
+.dh_ts strong{margin-bottom:10px; display:block;font-weight:normal}
+
+

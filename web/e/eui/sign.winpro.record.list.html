@@ -1,0 +1,149 @@
+<script type="text/javascript" src="src.js"></script>
+<table id="dg" data-options="rownumbers:true,singleSelect:true,pagination:true,url:'data/run.php?c=SignWinRecordEui&f=getSignWinRecordList',method:'get',toolbar:'#tb',onClickRow:onClickRow,onRowContextMenu:onRowContextMenu">
+    <thead>
+        <tr>
+            <th data-options="field:'id',width:100">
+                编号
+            </th>
+            <th data-options="field:'uId',width:200">
+                用户
+            </th>
+            <th data-options="field:'scName',width:200">
+                奖励归属
+            </th>
+            <th data-options="field:'spName',width:240">
+                物品
+            </th>
+            <th data-options="field:'createDate',width:160">
+                发放时间
+            </th>
+			<th data-options="field:'cMonth',width:60">
+                发放月份
+            </th>
+			<th data-options="field:'status',width:60" formatter="formatS">
+                状态
+            </th>
+			<th data-options="field:'oUser',width:60">
+                发放人
+            </th>
+        </tr>
+    </thead>
+</table>
+<div id="tb" style="padding:2px 5px;">
+		用户ID: <input class="easyui-textbox" id="inputUid" style="width:110px">
+		月份: <input class="easyui-textbox" id="inputMonth" style="width:110px" data-options="prompt:'例：2015-01'">
+		奖励类型: <strong id="scP"></strong>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-search" id="sBtn">Search</a>
+</div>
+
+<div id="w" class="easyui-window" title="用户详细" data-options="modal:true,closed:true,iconCls:'icon-save'" style="padding:10px;">
+			<div class="easyui-panel" title="" style="width:500px">
+				<div style="padding:10px 60px 20px 60px">
+				    <p id="contentP"></p>
+					<div style="text-align:center;padding:5px">
+				    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="$('#w').window('close');">关闭</a>
+				    </div>
+			    </div>
+			</div>
+</div>
+
+<div id="menu" class="easyui-menu" style="width: 50px; display: none;">
+    <!--放置一个隐藏的菜单Div-->    
+	<div data-options="iconCls:'icon-tip'" onclick="messageNotice(1)">发送短信</div>
+	<div data-options="iconCls:'icon-tip'" onclick="sendMsg(2)">标记为已发放</div>
+</div>
+		
+<script type="text/javascript">
+    $(function(){
+        var pager = $('#dg').datagrid().datagrid('getPager');
+		$('#sBtn').click(function(){
+			var _uid = $('#inputUid').val();
+			var _month = $('#inputMonth').val();
+			var _scId = $('select[name="scId"]').find('option:selected').val();
+			$('#dg').datagrid('load', {
+			    _uid: _uid,
+				_month:_month,
+				_scId:_scId
+			});
+		});
+    });
+	function defaultSearch(){
+		$.ajax({
+			url:'data/run.php?c=SignDayConfigEui&f=getSignDayConfigSelect',
+			type:'post',
+			data:'_name=scId',
+			success:function(data){
+				$('#scP').html(data);
+				$('select[name="scId"]').prepend('<option value="">奖励类型</option>');
+				$('select[name="scId"]').find('option:eq(0)').attr('selected',true);
+			}
+		});
+	}
+	defaultSearch();
+	function onClickRow(rowIndex, rowData){
+		$('#w').window('open');
+		$.ajax({
+			url:'data/run.php?c=InsMemberEui&f=getInsMemberUserIdHtml',
+			type:'post',
+			data:'uid='+rowData.uId,
+			success:function(data){
+				$('#contentP').html(data);
+			}
+		});
+	}
+	var _rowData = '';
+	var _updId = '';
+	var _updStatus = '';
+	function onRowContextMenu(e, rowIndex, rowData){
+		//三个参数：e里面的内容很多，真心不明白，rowIndex就是当前点击时所在行的索引，rowData当前行的数据
+        e.preventDefault(); //阻止浏览器捕获右键事件
+        $(this).datagrid("clearSelections"); //取消所有选中项
+        $(this).datagrid("selectRow", rowIndex); //根据索引选中该行
+        //显示右键菜单
+        $('#menu').menu('show', {			
+            left: e.pageX,//在鼠标点击处显示菜单
+            top: e.pageY
+        });
+		_updId = rowData.id;
+		_updStatus = rowData.status;
+		_rowData = rowData;
+		
+	}
+	function sendMsg(msgtype){
+		if(_updStatus=='2'){
+			$.messager.alert('操作','请勿重复发放操作','error');
+		}else{
+			$.ajax({
+				url:'data/run.php?c=SignWinRecordEui&f=updateSignWinRecordStatus',
+				type:'post',
+				data:'id='+_updId+'&_s='+msgtype,
+				success:function(data){
+					$.messager.alert('操作',data,'ok');
+					$('#dg').datagrid('load');
+				}
+			});	
+		}		
+	}
+	
+	function messageNotice(msgtype){
+		$.ajax({
+			url:'data/run.php?c=SignWinRecordEui&f=messageIns',
+			type:'post',
+			data:'uid='+_rowData.uId+'&msgtype='+msgtype,
+			success:function(data){
+				if(data=='0'){
+					$.messager.alert('提示','发送失败','Info');
+				}else{
+					$.messager.alert('提示','发送成功','Info');
+				}
+			}
+		});	
+	}
+	function formatS(val){
+		if(val=='1'){
+			return '<b style="color:red;">已创建<b>';
+		}else if(val=='2'){
+			return '已发放'
+		}
+	}
+</script>

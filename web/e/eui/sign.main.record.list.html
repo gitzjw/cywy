@@ -1,0 +1,43 @@
+<script type="text/javascript" src="src.js"></script>
+<table id="dg" data-options="rownumbers:true,singleSelect:true,pagination:true,url:'data/run.php?c=SignMainRecordEui&f=getSignMainRecordList',method:'get',toolbar:'#tb'">
+    <thead>
+        <tr>
+            <th data-options="field:'id',width:100">
+                编号
+            </th>
+            <th data-options="field:'uId',width:200">
+                用户
+            </th>
+            <th data-options="field:'sMonth',width:100">
+                签到月份
+            </th>
+            <th data-options="field:'sDate',width:240">
+                签到日期
+            </th>
+            <th data-options="field:'sTime',width:60">
+                签到时间
+            </th>
+        </tr>
+    </thead>
+</table>
+<div id="tb" style="padding:2px 5px;">
+		用户ID: <input class="easyui-textbox" id="inputUid" style="width:110px">
+		月份: <input class="easyui-textbox" id="inputMonth" style="width:110px" data-options="prompt:'例：2015-01'">
+		天: <input class="easyui-datebox" id="inputDay" style="width:110px">
+		<a href="#" class="easyui-linkbutton" iconCls="icon-search" id="sBtn">Search</a>
+</div>
+<script type="text/javascript">
+    $(function(){
+        var pager = $('#dg').datagrid().datagrid('getPager');
+		$('#sBtn').click(function(){
+			var _uid = $('#inputUid').val();
+			var _month = $('#inputMonth').val();
+			var _day = $('#inputDay').datebox('getValue');
+			$('#dg').datagrid('load', {
+			    _uid: _uid,
+				_month:_month,
+				_day:_day
+			});
+		});
+    });
+</script>

@@ -1,0 +1,130 @@
+<script type="text/javascript" src="src.js"></script>
+
+<table id="dg" data-options="rownumbers:true,singleSelect:true,pagination:true,url:'data/run.php?c=InsPayEui&f=getInsPayList',method:'get',toolbar:'#tb',onDblClickRow:onDblClickRow">
+    <thead>
+        <tr>
+            <th data-options="field:'id',width:150">
+                订单号
+            </th>
+            <th data-options="field:'rCreateTime',width:100">
+           创建时间   
+            </th>
+            <th data-options="field:'rPay',width:60">
+                支付金额
+            </th>
+            <th data-options="field:'rPayCode',width:220">
+                交易流水号
+            </th>
+            <th data-options="field:'rPayTime',width:100">
+                支付时间
+            </th>
+            <th data-options="field:'rStatus',width:130" formatter="formatS">
+                状态
+            </th>
+			<th data-options="field:'rSpan',width:80">
+                时长/月
+            </th>
+			<th data-options="field:'uId',width:100">
+                支付用户
+            </th>
+        </tr>
+    </thead>
+</table>
+<div id="tb" style="padding:2px 5px;">
+		订单号: <input class="easyui-textbox" id="inputId" style="width:110px">
+		用户ID: <input class="easyui-textbox" id="inputUid" style="width:110px">
+		交易流水号: <input class="easyui-textbox" id="inputPayId" style="width:110px">
+		支付时间: <input class="easyui-datebox" id="inputDate" style="width:110px" data-options="onSelect:onSelect">
+		<a href="#" class="easyui-linkbutton" iconCls="icon-search" id="sBtn">Search</a>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-reload" id="reloadBtn">加载全部</a>
+</div>
+<div id="w" class="easyui-window" title="子订单数据" data-options="modal:true,closed:true,iconCls:'icon-save'" style="padding:10px;">
+			<div class="easyui-panel" title="" style="" id="adsHtml">
+			</div>
+			<div class="easyui-panel" title="" style="">
+				<table id="c_dg" data-options="rownumbers:true,singleSelect:true,pagination:true,url:'data/run.php?c=InsPayRecordEui&f=getInsPayRecordPidList',method:'get'">
+				    <thead>
+				        <tr>
+				            <th data-options="field:'pId',width:150">
+				                订单号
+				            </th>
+				            <th data-options="field:'iName',width:100">
+				             保单人   
+				            </th>
+				            <th data-options="field:'iIdCard',width:260">
+				                身份证
+				            </th>
+				            <th data-options="field:'iTelNumber',width:100">
+				                联系电话
+				            </th>
+				            <th data-options="field:'iSpan',width:60">
+				                有效时长
+				            </th>
+							<th data-options="field:'rSpan',width:80">
+				                增加时长
+				            </th>
+							<th data-options="field:'iStart',width:160">
+				               开始生效时间
+				            </th>
+							<th data-options="field:'iEnd',width:160">
+				               结束时间
+				            </th>							
+				        </tr>
+				    </thead>
+				</table>
+			</div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        var pager = $('#dg').datagrid().datagrid('getPager'); // get the pager of datagrid
+		$('#sBtn').click(function(){
+			var _id = $('#inputId').val();
+			var _uid = $('#inputUid').val();
+			var _payid = $('#inputPayId').val();
+			var _date = $('#inputDate').val();
+			$('#dg').datagrid('load', {
+			    _id: _id,
+			    _uid: _uid,
+				_payid:_payid,
+				_date:_date
+			});
+		});
+		$("#reloadBtn").click(function(){
+			$('#inputId').textbox({value:''});
+			$('#inputUid').textbox({value:''});
+			$('#inputPayId').textbox({value:''});
+			$('#inputDate').datebox({value:''});
+			$('#inputDate').val('');
+			$('#dg').datagrid('load',{});
+		});
+    });	
+	function onSelect(date){
+		var y = date.getFullYear();
+		var m = date.getMonth()+1;
+		var d = date.getDate();
+		$('#inputDate').val(m+'/'+d+'/'+y)
+	}
+	function formatS(val,row,index){
+		var _str = '';
+		switch (val) {
+			case '0' :
+				_str = '订单已创建';
+				break;
+			case '1' :
+				_str = '支付成功';
+				break;
+			default :
+				_str = '订单已创建';
+				break;
+		}
+		return _str;
+	}
+	function onDblClickRow(field,row){		
+		$('#w').window('open');
+		var _oid = row.id;
+		var apager = $('#c_dg').datagrid().datagrid('getPager');		
+		$('#c_dg').datagrid('load',{
+			_pid:_oid
+		})
+	}
+</script>

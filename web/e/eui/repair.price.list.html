@@ -1,0 +1,175 @@
+<script type="text/javascript" src="src.js"></script>
+<table id="tg" data-options="rownumbers:true,singleSelect:true,pagination:true,
+url:'data/run.php?c=RepairPriceEui&f=getRepairPriceList',method:'get',toolbar:'#tb',footerbar:'#w',
+onDblClickRow:onDblClickRow"
+>
+    <thead>
+        <tr>
+            <th data-options="field:'id',width:100">
+                编号
+            </th>
+            <th data-options="field:'wTypeName',width:200">
+                产品
+            </th>
+            <th data-options="field:'wCityName',width:100">
+               城市
+            </th>
+            <th data-options="field:'oPrice',width:240">
+                原价
+            </th>
+            <th data-options="field:'dPrice',width:60">
+                优惠
+            </th>
+			<th data-options="field:'nPrice',width:60">
+                最终价格
+            </th>
+			<th data-options="field:'rpStatus',width:60" formatter="formatS">
+                状态
+            </th>
+        </tr>
+    </thead>
+</table>
+<div id="tb" style="padding:2px 5px;">
+		<a href="#" class="easyui-linkbutton" iconCls="icon-add" id="addBtn">添加价格</a>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-reload" id="reloadBtn" onclick="reloadData()">刷新</a>
+</div>
+<div id="w" class="easyui-window" title="编辑价格" data-options="modal:true,closed:true,iconCls:'icon-save'" style="padding:10px;">
+		<div class="easyui-panel" title="" style="width:500px">
+			<div style="padding:10px 60px 20px 60px">
+			    <form id="ff" method="post">
+			    	<input type="hidden" name="id" id="inputId" value="">
+			    	<table cellpadding="5">
+			    		<tr>
+			    			<td>编号:</td>
+			    			<td id="idTd"></td>
+			    		</tr>
+						<tr>
+			    			<td>产品:</td>
+			    			<td id="wTypeHtml"></td>
+			    		</tr>
+			    		<tr>
+			    			<td>城市:</td>
+			    			<td id="wCityHtml"></td>
+			    		</tr>
+			    		<tr>
+			    			<td>原价:</td>
+			    			<td><input class="easyui-numberbox" name="oPrice" id="oPrice"></input></td>
+			    		</tr>
+						<tr>
+			    			<td>优惠:</td>
+			    			<td><input class="easyui-numberbox" name="dPrice" id="dPrice"></input></td>
+			    		</tr>
+			    		<tr>
+			    			<td>状态:</td>
+			    			<td>
+			    				<select name="rpStatus">
+			    					<option value="1">启用</option>
+			    					<option value="0">禁用</option>
+			    				</select>
+			    			</td>
+			    		</tr>
+			    	</table>
+			    </form>
+				<div style="text-align:center;padding:5px">
+			    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitWin()">提交</a>
+			    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="closeWin()">关闭</a>
+			    </div>
+		    </div>
+		</div>
+	</div>
+<script type="text/javascript">
+    $(function(){
+        var pager = $('#tg').datagrid().datagrid('getPager'); // get the pager of datagrid       
+        $('#addBtn').click(function(){
+			$('#w').window('open');
+			$('#idTd').html('');
+			$('#ff').form('reset');
+			$('#ff').form('clear');
+			$.ajax({
+				url:'data/run.php?c=WebTypeEui&f=getChildSelectHtml',
+				type:'post',
+				data:'_name=wType&_fid=14',
+				success:function(data){
+					$('#wTypeHtml').html(data);
+				}
+			});		
+			$.ajax({
+				url:'data/run.php?c=WebTypeEui&f=getChildSelectHtml',
+				type:'post',
+				data:'_name=rpCity&_fid=20',
+				success:function(data){
+					$('#wCityHtml').html(data);
+				}
+			});
+		});
+    });
+	function formatS(val,row,index){
+		if(val=='1'){
+			return '正常';
+		}else{
+			return '异常';
+		}
+	}
+	function onDblClickRow(field,row){
+		$('#w').window('open');
+		$('#idTd').html(row.id);
+		$('#inputId').val(row.id);
+		$('#oPrice').numberbox({required:true,value:row.oPrice});
+		$('#dPrice').numberbox({required:true,value:row.dPrice});
+		var _wtype = row.wType;
+		var _rpcity = row.rpCity;
+		var _sts = row.rpStatus;
+		$('select[name="rpStatus"]').find('option').each(function(){
+			if($(this).val()==_sts){
+				$(this).attr('selected',true);
+				return false;
+			}
+		});
+		$.ajax({
+			url:'data/run.php?c=WebTypeEui&f=getChildSelectHtml',
+			type:'post',
+			data:'_name=rpCity&_fid=20',
+			success:function(data){
+				$('#wCityHtml').html(data);
+				$('select[name="rpCity"]').find('option').each(function(){
+					if($(this).val()==_rpcity){
+						$(this).attr('selected',true);
+						return false;
+					}
+				});
+			}
+		});
+		$.ajax({
+				url:'data/run.php?c=WebTypeEui&f=getChildSelectHtml',
+				type:'post',
+				data:'_name=wType&_fid=14',
+				success:function(data){
+					$('#wTypeHtml').html(data);
+					$('select[name="wType"]').find('option').each(function(){
+					if($(this).val()==_wtype){
+						$(this).attr('selected',true);
+						return false;
+					}
+				});
+				}
+			});
+	}
+	function closeWin(){
+		$('#w').window('close');
+	}
+	function submitWin(){
+		$('#ff').form('submit',{
+			url:'data/run.php?c=RepairPriceEui&f=saveRepairPrice',
+		    onSubmit: function(){
+		    },
+		    success:function(data){
+				$.messager.alert('提示',data,'Info');
+				closeWin();
+				reloadData();
+		    }
+		});
+	}
+	function reloadData(){
+		$('#tg').datagrid('reload');
+	}
+</script>

@@ -1,0 +1,222 @@
+<script type="text/javascript" src="src.js"></script>
+
+<table id="dg" data-options="rownumbers:true,singleSelect:true,pageSize: 30,pagination:true,url:'data/run.php?c=ShopOrderEui&f=getShopOrderList&_city=100001',method:'get',toolbar:'#tb',onDblClickRow:onDblClickRow,onRowContextMenu:onRowContextMenu">
+    <thead>
+        <tr>
+            <th data-options="field:'id',width:170">
+                订单ID
+            </th>
+            <th data-options="field:'uId',width:100">
+                用户ID
+            </th>
+			<th data-options="field:'oName',width:100">
+                收货人
+            </th>
+			<th data-options="field:'oShopName',width:140">
+                店名
+            </th>
+			<th data-options="field:'oTel',width:100">
+                电话
+            </th>
+			<th data-options="field:'oAddress',width:240">
+                地址
+            </th>
+			<th data-options="field:'city',width:60" formatter="getCityName">
+                地区
+            </th>
+            <th data-options="field:'oMoney',width:100">
+                原支付金额
+            </th>
+            <th data-options="field:'dMoney',width:100">
+               优惠金额
+            </th>
+            <th data-options="field:'nMoney',width:100">
+                实际支付金额
+            </th>
+			<th data-options="field:'expMoney',width:100">
+                配送费
+            </th>
+			<th data-options="field:'oStatus',width:160" formatter="formatS">
+                状态
+            </th>
+			<th data-options="field:'NULL',width:100" formatter="formatPay">
+                是否在线支付
+            </th>
+            <th data-options="field:'createTime',width:160">
+                创建时间
+            </th>
+			<th data-options="field:'payTime',width:160">
+                支付时间
+            </th>
+			<th data-options="field:'payCode',width:160">
+                交易流水号
+            </th>
+        </tr>
+    </thead>
+</table>
+
+<!-- 子订单开始 -->
+<div id="w" class="easyui-window" title="子订单数据" data-options="modal:true,closed:true,iconCls:'icon-save'" style="padding:10px;">			
+			<div class="easyui-panel" title="" style="">
+				<table id="c_dg" data-options="rownumbers:true,singleSelect:true,pagination:true,method:'get'">
+				    <thead>
+				        <tr>
+				            <th data-options="field:'oId',width:150">
+				                订单号
+				            </th>
+							<th data-options="field:'uId',width:100">
+				                用户ID
+				            </th>
+							<th data-options="field:'pId',width:60">
+				                产品ID
+				            </th>
+							<th data-options="field:'pTitle',width:200">
+				                产品名称
+				            </th>
+							<th data-options="field:'eNum',width:100">
+				                数量
+				            </th>
+							<th data-options="field:'ePrice',width:100">
+				              单价      
+				            </th>
+							<th data-options="field:'tPrice',width:100">
+				              总价
+				            </th>
+				        </tr>
+				    </thead>
+				</table>
+			</div>
+			<div class="easyui-panel" title="" style="" id="adsHtml">
+			</div>
+</div>
+<!-- 子订单结束 -->
+
+<div id="menu" class="easyui-menu" style="width: 50px; display: none;">
+    <!--放置一个隐藏的菜单Div-->
+	<div data-options="iconCls:'icon-print'"><a href="print.html?i=2" target="_blank" class="" iconCls="" id="pOBtn">打印配送单</a></div>    
+</div>
+
+<div id="tb" style="padding:2px 5px;">
+		用户ID: <input class="easyui-textbox" id="inpUID" style="width:110px">
+		订单ID: <input class="easyui-textbox" id="inpID" style="width:110px">
+		交易流水ID: <input class="easyui-textbox" id="inpPAYID" style="width:110px">
+		开始日期：<input class="Wdate" type="text" id="d15" style="width:110px" onFocus="WdatePicker({isShowClear:false,readOnly:true})"/>
+		结束日期：<input class="Wdate" type="text" id="d16" style="width:110px" onFocus="WdatePicker({isShowClear:false,readOnly:true})"/>
+		状态：<select id="d17" class="easyui-combobox" style="width:120px;">
+				<option value="">请选择订单状态</option>
+				<option value="1">订单创建成功</option>
+				<option value="2">订单已确认，待配送</option>
+				<option value="3">订单已取消</option>
+				<option value="4">订单配送中</option>
+				<option value="5">收款成功</option>
+				<option value="6">订单已完成</option>
+				<option value="7">退货申请中</option>
+				<option value="8">退货成功</option>
+			</select>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-search" id="sBtn">Search</a>
+		<a href="print.html?i=cg&_city=100001" target="_blank" class="easyui-linkbutton" iconCls="icon-print" id="pTBtn">打印总采购单</a>		
+</div>
+<script type="text/javascript">
+    $(function(){
+        var pager = $('#dg').datagrid().datagrid('getPager'); 
+		$('#sBtn').click(function(){
+			var _id = $('#inpID').val();
+			var _uid = $('#inpUID').val();
+			var _paycode = $('#inpPAYID').val();
+			var _start = $('#d15').val();
+			var _end = $('#d16').val();
+			var _status = $('#d17').combobox('getValue');
+			$('#dg').datagrid('load', {
+			    _id: _id,
+			    _uid: _uid,
+				_paycode:_paycode,
+				_start:_start,
+				_end:_end,
+				_status:_status,
+			});
+		});
+    });
+	$('#d188').combobox({
+		onSelect: function(param){
+			//console.log(param.value);
+			$('#pTBtn').attr('href','print.html?i=cg&_city='+param.value);
+		}
+	});
+
+	function formatPay(val,row,index){		
+		if(row.payCode==''){
+			var _str = '否';
+		}else{
+			var _str = '<strong style="color:#008000">是</strong>';
+		}
+		return _str;
+	}
+	
+	function formatS(val,row,index){
+		var _str = '';
+		switch (val) {
+			case '1' :
+				_str = '<strong style="color:C0C0C0">订单创建成功</strong>';
+				break;
+			case '2' :
+				_str = '<strong style="color:#DAA520">订单已确认，待配送</strong>';
+				break;
+			case '3' :
+				_str = '<strong style="color:#696969">订单已取消</strong>';
+				break;
+			case '4' :
+				_str = '<strong style="color:#D2691E">订单配送中</strong>';
+				break;
+			case '5' :
+				_str = '<strong style="color:#00FF00">收款成功</strong>';
+				break;
+			case '6' :
+				_str = '<strong style="color:#008000">订单已完成</strong>';
+				break;
+			case '7' :
+				_str = '<strong style="color:#FF0000">退货申请中</strong>';
+				break;
+			case '8' :
+				_str = '<strong style="color:#B22222">退货成功</strong>';
+				break;
+			default :
+				_str = '<strong style="color:#90EE90">订单创建成功</strong>';
+				break;
+		}
+		return _str;
+	}
+	function onDblClickRow(field,row){		
+		$('#w').window('open');
+		$('#adsHtml').html('');
+		var _oid = row.id;
+		//var apager = $('#c_dg').datagrid().datagrid('getPager');		
+		$('#c_dg').datagrid({
+			url:'data/run.php?c=ShopOrderDetailEui&f=getShopOrderDetailOidList',
+			 queryParams: {
+			 	_oid: _oid
+			 }
+		});
+		$.ajax({
+			url:'data/run.php?c=ShopOrderDetailEui&f=getShopOrderHistory',
+			type:'post',
+			data:'_oid='+_oid,
+			success:function(data){
+				$('#adsHtml').html(data);
+			}
+		})
+	}
+	
+	function onRowContextMenu(e, rowIndex, rowData){
+		//三个参数：e里面的内容很多，真心不明白，rowIndex就是当前点击时所在行的索引，rowData当前行的数据
+        e.preventDefault(); //阻止浏览器捕获右键事件
+        $(this).datagrid("clearSelections"); //取消所有选中项
+        $(this).datagrid("selectRow", rowIndex); //根据索引选中该行
+        //显示右键菜单
+        $('#menu').menu('show', {			
+            left: e.pageX,//在鼠标点击处显示菜单
+            top: e.pageY
+        });
+		//_data = rowData;
+		$('#pOBtn').attr('href','print.html?i='+rowData.id); 
+	}
+</script>

@@ -1,0 +1,123 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>萌工社</title>
+        <meta name="author" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        <link rel="stylesheet" href="css/index.css" type="text/css" />
+        <script src="/public/js/jquery-1.8.3.min.js">
+        </script>
+        <script src="js/echarts.min.js">
+        </script>
+        <body>
+        </body>
+        <!--nav-->
+        <nav id="abcabc">
+            <a href="index.html" _v="zhuliang.json">主粮</a>
+            <a href="lingshi.html" _v="lingshi.json">零食</a>
+            <a href="javascript:void(0)" _v="">日用</a>
+        </nav>
+        <!--nav end--><!--content-->
+        <div class="content">
+            <!--title-->
+            <div class="content_title">
+                <h2 id="titleAbc"></h2>
+                <p>
+                    2016年03月 周边线上消费数据分析
+                </p>
+            </div>
+            <!--title end-->
+            <!--content_c-->
+            <div id="main" style="width: 320px;height:300px;left:20%;">
+            </div>
+            <!--content_c end-->
+            <script type="text/javascript">
+                var _height = $(window).height() - 150;
+                var _width = $(window).width();
+                $('#main').attr('style', 'width:' + _width + 'px;height:' + _height + 'px;');
+				function getUrlParam(name) {
+					var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+					var r = window.location.search.substr(1).match(reg);
+					if (r != null)
+						return unescape(r[2]);
+					return null;
+				}
+				var _navI = getUrlParam('_nav');
+				$('#abcabc').find('a:eq('+_navI+')').attr('class','active');
+				
+				var _tmpN = getUrlParam('_n');
+				
+				//decodeURI(_tmpN) + 
+				$('#titleAbc').html('谷德道格宠物会所 · 量子分析系统');
+				
+				$.get('data/data.php?_n='+decodeURI(_tmpN),function(data){
+					var _d = eval('('+data+')');
+					var _tmpY = new Array();
+					var _tmpX =  new Array();
+					var o=0;
+					for(var i in _d){
+						//_tmpY += '"'+i+'",';
+						//_tmpX += _d[i]+',';						
+						_tmpY[o]=i;
+						_tmpX[o]=_d[i];
+						++o;
+					}
+					/*
+					_tmpY = _tmpY.substring(0,_tmpY.length-1);
+					_tmpY = '['+_tmpY+']';
+					_tmpX = _tmpX.substring(0,_tmpX.length-1);
+					_tmpX = '['+_tmpX+']';
+					*/
+					
+					// 基于准备好的dom，初始化echarts实例
+	                var myChart = echarts.init(document.getElementById('main'));
+	                
+	                // 指定图表的配置项和数据
+	                option = {
+	                    title: {
+	                        text: '',
+	                        subtext: ''
+	                    },
+	                    tooltip: {
+	                        trigger: 'axis',
+	                        axisPointer: {
+	                            type: 'shadow'
+	                        }
+	                    },
+	                    legend: {
+	                        data: []
+	                    },
+	                    grid: {
+	                        left: '3%',
+	                        right: '4%',
+	                        bottom: '3%',
+	                        containLabel: true
+	                    },
+	                    xAxis: {
+	                        type: 'value',
+	                        boundaryGap: [0, 1]
+	                    },
+	                    yAxis: {
+	                        type: 'category',
+	                        data: _tmpY
+	                    },
+	                    series: [{
+	                        name: '',
+	                        type: 'bar',
+	                        data: _tmpX
+	                    }]
+	                };
+	                
+	                
+	                
+	                // 使用刚指定的配置项和数据显示图表。
+	                myChart.setOption(option);
+				});
+            </script>
+        </div>
+        <!--content end-->
+        </html>

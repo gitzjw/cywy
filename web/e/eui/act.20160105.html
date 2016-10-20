@@ -1,0 +1,74 @@
+<script type="text/javascript" src="src.js"></script>
+
+<table id="dg" data-options="rownumbers:true,singleSelect:true,pagination:true,url:'data/run.php?c=ActivityEui&f=getActivityList&_t=20160105',method:'get',toolbar:'#tb'">
+    <thead>
+        <tr>
+            <th data-options="field:'id',width:100">
+                编号
+            </th>
+            <th data-options="field:'xm',width:60">
+                姓名
+            </th>
+            <th data-options="field:'tel',width:80">
+                电话号码
+            </th>
+            <th data-options="field:'shop',width:150">
+                店名
+            </th>
+            <th data-options="field:'exp',width:60">
+                经验
+            </th>
+            <th data-options="field:'pz',width:60">
+                品种
+            </th>
+			<th data-options="field:'content',width:160">
+                内容
+            </th>
+			<th data-options="field:'status',width:60" formatter="f">
+                状态
+            </th>			
+			<th data-options="field:'lv',width:60">
+                等级
+            </th>
+			<th data-options="field:'area',width:60">
+                区域
+            </th>
+			<th data-options="field:'cdate',width:160">
+                日期
+            </th>
+			<th data-options="field:'paycode',width:160">
+                交易流水号
+            </th>
+			<th data-options="field:'paytime',width:160">
+                交易时间
+            </th>
+			<th data-options="field:'paymoney',width:60">
+                支付金额
+            </th>			
+        </tr>
+    </thead>
+</table>
+<div id="tb" style="padding:2px 5px;">
+		区域: <input class="easyui-textbox" id="inputArea" style="width:190px"  data-options="prompt:'请输入区域：北京、上海、深圳'">
+		<a href="#" class="easyui-linkbutton" iconCls="icon-search" id="sBtn">Search</a>
+</div>
+<script type="text/javascript">
+    $(function(){
+        var pager = $('#dg').datagrid().datagrid('getPager'); // get the pager of datagrid       
+        $('#sBtn').click(function(){
+			var _area = $('#inputArea').val();			
+			$('#dg').datagrid('load', {
+			    _area: _area
+			});
+		});
+    });
+	function f(val){
+		if(val=='1'){
+			return '未支付';
+		}else if(val=='2'){
+			return '<b style="color:green">已支付</b>';
+		}else{
+			return '<b style="color:#858585">已过期</b>';
+		}
+	}
+</script>

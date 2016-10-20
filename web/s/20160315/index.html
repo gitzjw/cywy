@@ -1,0 +1,117 @@
+ <!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>保险登记&代金券兑换</title>
+<meta name="author" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" type="text/css" href="css/css.css" />
+<script src="/public/js/jquery-1.8.3.min.js"></script>
+</head>
+
+
+<body>
+<img src="img/daijinquan.jpg" id="imgimg" width="100%;">
+<section class="margin lxdh" style="margin-top:15px;">
+ <form action="#" >
+                <input type="hidden" name="run" value="saveActivityTmpLS">
+				<input type="hidden" name="action" value="Activity">
+				<input type="hidden" name="_t" value="20160315">
+<div class="dh_ts"><strong>温馨提示：</strong>请您务必填写正确登记信息，以便展会后我们与您取得联系。请按工作人员提示操作，随意填写商品代金券编码则代金券视为无效作废。
+</div>
+  <div class="border_1 margin20" >
+    <input   placeholder="姓名" name="xm"  type="text"/>
+  </div>
+    <div class="border_1 margin20" >
+    <input   placeholder="联系电话" name="tel"  type="text"/>
+  </div>
+    <div class="border_1 margin20" >
+    <input   placeholder="店名" name="shop"  type="text"/>
+  </div>
+    <div class="border_1 margin20" >
+    <input   placeholder="店内人数"  name="shopI" type="text"/>
+  </div>
+    <div class="border_1 margin20" >
+    <input   placeholder="地址"  name="ads" type="text"/>
+  </div>
+  <div class="clear"></div>
+ <div class="border_2">
+    <input   placeholder="代金券编码开始" name="ks"  type="text"/>
+  </div> 
+  <div class="zhongjian">到</div>
+  <div class="border_2">
+    <input   placeholder="代金券编码结束" name="js"  type="text"/>
+  </div>
+  <input   placeholder="城市" name="city" id="city" type="hidden"/>
+  <form>
+</section>
+<div class="Buy_btn4 submit_order" id="btn_s"> <a href="javascript:void(0)">提交</a> </div>
+</body>
+<script>
+	function getUrlParam(name) {
+		var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+		var r = window.location.search.substr(1).match(reg);
+		if (r != null)
+			return unescape(r[2]);
+		return null;
+	}
+	var ComClass = {
+						    
+						    post: function(params, callback){
+						        $.post("/c/run.php", params, function(data, textStatus){
+						            callback(data);
+						        });
+						    },
+						    
+						    href: function(tpl){
+						        window.location.href = this.webSite + tpl;
+						    }
+						    
+						}
+	var _city = getUrlParam('_city');
+	$('#city').val(_city);
+	if(_city=='100001'){
+		$('#imgimg').attr('src','img/daijinquan.jpg');		
+	}else if(_city=='200001'){
+		$('#imgimg').attr('src','img/shanghai.jpg');
+	}else if(_city=='300001'){
+		$('#imgimg').attr('src','img/shenzhen.jpg');
+	}
+	var _s_u_b=0;
+	function getFormValue() {
+		var _valStr = '';
+		$('form input:text').each(function() {
+			_valStr += $(this).attr('name')+'='+$(this).val();
+			_valStr += '& ';
+		});		
+		$('form input:hidden').each(function() {
+			_valStr += $(this).attr('name')+'='+$(this).val();
+			_valStr += '& ';
+		});	
+		_valStr += '& ';		
+		return _valStr;
+	}
+	$('#btn_s').click(
+			function() {
+				var _val = getFormValue();
+				if (_s_u_b == 0) {
+					++_s_u_b;
+					ComClass.post(_val, callbackData);
+				}
+			});
+	function callbackData(data) {
+		var _d = eval('(' + data + ')');
+		if (_d.code == '1') {
+			_e = _d.msg;
+			alert(_e);
+			window.location.reload();
+		} else {
+			_s_u_b = 0;
+			alert(_d.msg);
+		}
+	}
+</script>
+</html>

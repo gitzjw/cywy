@@ -1,0 +1,36 @@
+<script type="text/javascript" src="src.js"></script>
+
+<table id="dg" data-options="rownumbers:true,pageSize:30,singleSelect:true,pagination:true,url:'data/run.php?c=ShopOrderExpressEui&f=getShopOrderExpressList',method:'get',toolbar:'#tb'">
+    <thead>
+        <tr>
+            <th data-options="field:'oId',width:200">
+                订单号
+            </th>
+            <th data-options="field:'expId',width:300">
+                物流号
+            </th>
+            <th data-options="field:'expName',width:200">
+                物流名称
+            </th>
+        </tr>
+    </thead>
+</table>
+<div id="tb" style="padding:2px 5px;">
+		订单号: <input class="easyui-textbox" id="inputId" style="width:210px">
+		物流名称: <input class="easyui-textbox" id="inputIdcard" style="width:110px">
+		<a href="#" class="easyui-linkbutton" iconCls="icon-search" id="sBtn">Search</a>
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        var pager = $('#dg').datagrid().datagrid('getPager'); 
+		$('#sBtn').click(function(){
+			var _id = $('#inputId').val();
+			var _idcard = $('#inputIdcard').val();
+			$('#dg').datagrid('load', {
+			    _oid: _id,
+			    _wlmc: _idcard,
+			});
+		});
+    });
+</script>

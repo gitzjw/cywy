@@ -1,0 +1,154 @@
+<script type="text/javascript" src="src.js"></script>
+<table id="tg" data-options="rownumbers:true,singleSelect:true,pagination:true,
+url:'data/run.php?c=SignNewsEui&f=getSignNewsList',method:'get',toolbar:'#tb',footerbar:'#w',
+onDblClickRow:onDblClickRow"
+>
+    <thead>
+        <tr>
+            <th data-options="field:'id',width:100">
+                编号
+            </th>
+            <th data-options="field:'title',width:200">
+                标题
+            </th>
+            <th data-options="field:'subTitle',width:150">
+               副标题
+            </th>
+           <th data-options="field:'picUrl',width:60" formatter="picF">
+                图片
+            </th>
+            <th data-options="field:'hrefUrl',width:60" formatter="picF">
+               跳转连接
+            </th>
+			<th data-options="field:'sDate',width:120">
+               发送日
+            </th>
+			<th data-options="field:'createDate',width:60">
+               创建时间
+            </th>
+			<th data-options="field:'status',width:60" formatter="formatS">
+               状态
+            </th>
+        </tr>
+    </thead>
+</table>
+<div id="tb" style="padding:2px 5px;">
+		<a href="#" class="easyui-linkbutton" iconCls="icon-add" id="addBtn">添加每日推送</a>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-reload" id="reloadBtn" onclick="reloadData()">刷新</a>
+</div>
+<div id="w" class="easyui-window" title="编辑每日推送" data-options="modal:true,closed:true,iconCls:'icon-save'" style="padding:10px;">
+		<div class="easyui-panel" title="" style="width:500px">
+			<div style="padding:10px 60px 20px 60px">
+			    <form id="ff" method="post">
+			    	<input type="hidden" name="id" id="inputId" value="">
+			    	<table cellpadding="5">
+			    		<tr>
+			    			<td>编号:</td>
+			    			<td id="idTd"></td>
+			    		</tr>
+			    		<tr>
+			    			<td>标题:</td>
+			    			<td><input class="easyui-textbox" name="title" id="title"></input></td>
+			    		</tr>
+			    		<tr>
+			    			<td>副标题:</td>
+			    			<td><input class="easyui-textbox" name="subTitle" id="subTitle"></input></td>
+			    		</tr>
+						<tr>
+			    			<td>图片:</td>
+			    			<td><input class="easyui-textbox" name="picUrl" id="picUrl"></input></td>
+			    		</tr>
+						<tr>
+			    			<td>跳转连接:</td>
+			    			<td><input class="easyui-textbox" name="hrefUrl" id="hrefUrl"></input></td>
+			    		</tr>
+						<tr>
+			    			<td>发送日:</td>
+			    			<td><input class="easyui-datebox" name="sDate" id="sDate"></input></td>
+			    		</tr>
+						<tr>
+				    			<td>状态:</td>
+				    			<td>
+				    				<select name="status">
+				    					<option value="1">普通</option>
+				    					<option value="2">默认</option>
+				    				</select>
+				    			</td>
+				    		</tr>
+			    	</table>
+			    </form>
+				<div style="text-align:center;padding:5px">
+			    	<a href="javascript:void(0)" class="easyui-linkbutton" id="subBtn" onclick="submitWin()">提交</a>
+			    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="closeWin()">关闭</a>
+			    </div>
+		    </div>
+		</div>
+	</div>
+<script type="text/javascript">
+    $(function(){
+        var pager = $('#tg').datagrid().datagrid('getPager'); // get the pager of datagrid       
+        $('#addBtn').click(function(){
+			$('#w').window('open');
+			$('#idTd').html('');
+			$('#ff').form('reset');
+			$('#ff').form('clear');
+			$('select').find('option:eq(0)').attr('selected',true);
+		});
+    });
+	function formatS(val,row,index){
+		if(val=='1'){
+			return '普通';
+		}else{
+			return '默认';
+		}
+	}
+	function onDblClickRow(field,row){
+		$('#w').window('open');
+		$('#idTd').html(row.id);
+		$('#inputId').val(row.id);
+		
+		$('#title').textbox({required:true,value:row.title});
+		$('#subTitle').textbox({required:true,value:row.subTitle});
+		$('#picUrl').textbox({required:true,value:row.picUrl});		
+		$('#hrefUrl').textbox({required:true,value:row.hrefUrl});
+		$('#sDate').datebox({value:formatDate(row.sDate)});
+		
+		var _sts = row.status;
+		$('select[name="status"]').find('option').each(function(){
+			if($(this).val()==_sts){
+				$(this).attr('selected',true);
+				return false;
+			}
+		});
+	}
+	function closeWin(){
+		$('#w').window('close');
+	}
+	function submitWin(){
+		$('#ff').form('submit',{
+			url:'data/run.php?c=SignNewsEui&f=saveSignNews',
+		    onSubmit: function(){
+				$('#subBtn').linkbutton('disable');
+		    },
+		    success:function(data){
+				$.messager.alert('提示',data,'Info');
+				$('#subBtn').linkbutton('enable');
+				closeWin();
+				reloadData();
+		    }
+		});
+	}
+	function reloadData(){
+		$('#tg').datagrid('reload');
+	}
+	function formatDate(date){
+		if(date==''){
+			return '';
+		}
+		var _yy = date.split('-');
+		return _yy[1]+'/'+_yy[2]+'/'+_yy[0];
+	}
+	function picF(val){
+		return '<a target="_blank" href="'+val+'">点击查看</a>';
+	}
+</script>

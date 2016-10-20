@@ -1,0 +1,50 @@
+<script type="text/javascript" src="src.js"></script>
+
+<table id="dg" data-options="rownumbers:true,singleSelect:true,pagination:true,url:'data/run.php?c=ActivityEui&f=getActivityList&_t=20160315',method:'get'">
+    <thead>
+        <tr>
+            <th data-options="field:'id',width:100">
+                编号
+            </th>
+            <th data-options="field:'xm',width:60">
+                姓名
+            </th>
+            <th data-options="field:'tel',width:100">
+                电话号码
+            </th>
+            <th data-options="field:'shop',width:200">
+                店名
+            </th>
+            <th data-options="field:'shopI',width:160">
+                店内人数
+            </th>
+            <th data-options="field:'ads',width:160">
+                地址
+            </th>
+			<th data-options="field:'city',width:60" formatter="f">
+                城市
+            </th>
+			<th data-options="field:'cdate',width:160">
+                日期
+            </th>
+			<th data-options="field:'ks',width:160">
+                开始
+            </th>
+			<th data-options="field:'js',width:160">
+                结果
+            </th>
+        </tr>
+    </thead>
+</table>
+<script type="text/javascript">
+    $(function(){
+        var pager = $('#dg').datagrid().datagrid('getPager'); // get the pager of datagrid       
+    });
+	function f(val){
+		if(val=='100001'){
+			return '北京';
+		}else{
+			return '<b style="color:green">上海</b>';
+		}
+	}
+</script>

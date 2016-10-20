@@ -1,0 +1,144 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>萌工社</title>
+        <meta name="author" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+        <link rel="stylesheet" href="css/index.css" type="text/css" />
+        <script src="/public/js/jquery-1.8.3.min.js">
+        </script>
+        <script src="js/echarts.min.js">
+        </script>
+        <body>
+        </body>
+        <!--nav-->
+        <nav id="abcabc">
+            <a href="index.html" _v="zhuliang.json">主粮</a>
+            <a href="javascript:void(0)" _v="lingshi.json" class="active">零食</a>
+            <a href="javascript:void(0)" _v="">日用</a>
+        </nav>
+        <!--nav end--><!--content-->
+        <div class="content">
+            <!--title-->
+            <div class="content_title">
+                <h2 id="titleAbc">谷德道格宠物会所 · 量子分析系统</h2>
+                <p>
+                    2016年03月 周边线上消费数据分析
+                </p>
+            </div>
+            <!--title end-->
+            <!--content_c-->
+            <div id="main" style="width: 320px;height:400px;left:20%;">
+            </div>
+            <!--content_c end-->
+            <script type="text/javascript">
+                var _height = $(window).height() - 150;
+                var _width = $(window).width();
+                $('#main').attr('style', 'width:' + _width + 'px;height:' + _height + 'px;');
+                
+                // 基于准备好的dom，初始化echarts实例
+                var myChart = echarts.init(document.getElementById('main'));
+                
+                // 指定图表的配置项和数据
+                var option = {
+                    title: {
+                        text: '',
+                        subtext: '',
+                        x: 'center'
+                    },
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: "{a} <br/>{b} : {c} ({d}%)"
+                    },
+                    legend: {
+                        x: 'center',
+                        y: 'bottom',
+                        data: ["狗狗小食", "狗狗咬胶", "狗狗饼干", "狗狗罐头", "猫咪小食", "猫咪罐头"]
+                    },
+                    query: {
+                        maxAspectRatio: 1 // 当长宽比小于1时。
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            mark: {
+                                show: true
+                            },
+                            dataView: {
+                                show: true,
+                                readOnly: false
+                            },
+                            magicType: {
+                                show: true,
+                                type: ['pie', 'funnel']
+                            },
+                            restore: {
+                                show: true
+                            },
+                            saveAsImage: {
+                                show: true
+                            }
+                        }
+                    },
+                    calculable: true,
+                    series: [{
+                        name: '零食',
+                        type: 'pie',
+                        radius: [20, '60%'],
+                        center: ['50%', 200],
+                        roseType: 'radius',
+                        label: {
+                            normal: {
+                                show: false
+                            },
+                            emphasis: {
+                                show: true
+                            }
+                        },
+                        lableLine: {
+                            normal: {
+                                show: false
+                            },
+                            emphasis: {
+                                show: true
+                            }
+                        },
+                        data: [{
+                            "value": 2242,
+                            "name": "狗狗小食"
+                        }, {
+                            "value": 2314,
+                            "name": "狗狗咬胶"
+                        }, {
+                            "value": 2548,
+                            "name": "狗狗饼干"
+                        }, {
+                            "value": 2477,
+                            "name": "狗狗罐头"
+                        }, {
+                            "value": 2280,
+                            "name": "猫咪小食"
+                        }, {
+                            "value": 2883,
+                            "name": "猫咪罐头"
+                        }]
+                    }]
+                };
+                
+                
+                // 使用刚指定的配置项和数据显示图表。
+                myChart.setOption(option);
+                
+                // 处理点击事件并且条状到相应的百度搜索页面
+                myChart.on('click', function(params){
+                	window.location.href="d.html?_n="+encodeURI(encodeURI(params.name))+'&_nav=1';
+                });
+            </script>
+        </div>
+        <!--content end-->
+		<img src="images/sjly.jpg" width="100%;">
+        </html>

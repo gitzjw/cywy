@@ -1,0 +1,64 @@
+<script type="text/javascript" src="src.js"></script>
+
+<table id="dg" data-options="rownumbers:true,pageSize:30,singleSelect:true,pagination:true,url:'data/run.php?c=ShopOrderProLackEui&f=getShopOrderProLackList',method:'get',toolbar:'#tb'">
+    <thead>
+        <tr>
+            <th data-options="field:'id',width:60">
+                编号
+            </th>
+			<th data-options="field:'pId',width:80">
+                商品编号
+            </th>
+            <th data-options="field:'sptm',width:150">
+                商品条形码
+            </th>
+            <th data-options="field:'pTitle',width:400">
+                商品名称
+            </th>
+			<th data-options="field:'uId',width:100">
+                用户ID
+            </th>
+			<th data-options="field:'city',width:100" formatter="getCityName">
+                城市
+            </th>
+			<th data-options="field:'createTime',width:200">
+                登记时间
+            </th>
+			<th data-options="field:'pNum',width:200">
+                预计购买数量（已拆分）
+            </th>
+        </tr>
+    </thead>
+</table>
+<div id="tb" style="padding:2px 5px;">
+		商品条形码: <input class="easyui-textbox" id="inputSptm" style="width:110px">
+		物品名称: <input class="easyui-textbox" id="inputTitle" style="width:210px">
+		用户ID: <input class="easyui-textbox" id="inputUid" style="width:110px">
+		城市：<input id="cityCode" class="easyui-combobox" 
+									name="city"
+									data-options="
+											url:'data/run.php?c=ShopTypeEui&f=getCityCode',
+											method:'get',
+											valueField:'id',
+											textField:'text'
+									"></input>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-search" id="sBtn">Search</a>		
+</div>
+
+<script type="text/javascript">
+    $(function(){
+        var pager = $('#dg').datagrid().datagrid('getPager'); 
+		$('#sBtn').click(function(){
+			var _sptm = $('#inputSptm').val();
+			var _title = $('#inputTitle').val();
+			var _uid = $('#inputUid').val();
+			var _city = $('#cityCode').combobox('getValue');
+			$('#dg').datagrid('load', {
+			    _sptm: _sptm,
+			    _title: _title,
+				_uid: _uid,
+			    _city: _city,
+			});
+		});
+    });
+</script>
